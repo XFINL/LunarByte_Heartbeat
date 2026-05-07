@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
-import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink } from 'lucide-react';
+import SelectModal from '@/components/SelectModal';
+import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 
@@ -31,6 +32,34 @@ export default function Settings() {
     checkInterval: 60,
   });
   const [copied, setCopied] = useState(false);
+  const [themeModalOpen, setThemeModalOpen] = useState(false);
+  const [languageModalOpen, setLanguageModalOpen] = useState(false);
+  const [timezoneModalOpen, setTimezoneModalOpen] = useState(false);
+  const [layoutModalOpen, setLayoutModalOpen] = useState(false);
+
+  const themeOptions = [
+    { value: 'light', label: '浅色模式' },
+    { value: 'dark', label: '深色模式' },
+  ];
+
+  const languageOptions = [
+    { value: 'zh-CN', label: '中文' },
+    { value: 'en-US', label: 'English' },
+    { value: 'ja-JP', label: '日本語' },
+  ];
+
+  const timezoneOptions = [
+    { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
+    { value: 'UTC', label: 'UTC' },
+    { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
+    { value: 'Europe/London', label: 'Europe/London (UTC±0)' },
+    { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
+  ];
+
+  const layoutOptions = [
+    { value: 'grid', label: '网格布局' },
+    { value: 'list', label: '列表布局' },
+  ];
 
   const tabs = [
     { id: 'profile' as const, label: '个人资料', icon: User },
@@ -161,12 +190,12 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, email: !notificationSettings.email })}
-                      className={`w-12 h-7 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all ${
                         notificationSettings.email ? 'bg-indigo-500' : 'bg-gray-300'
                       }`}
                     >
-                      <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.email ? 'translate-x-5' : 'translate-x-0.5'
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        notificationSettings.email ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -183,12 +212,12 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, webhook: !notificationSettings.webhook })}
-                      className={`w-12 h-7 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all ${
                         notificationSettings.webhook ? 'bg-indigo-500' : 'bg-gray-300'
                       }`}
                     >
-                      <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.webhook ? 'translate-x-5' : 'translate-x-0.5'
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        notificationSettings.webhook ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -205,12 +234,12 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, sound: !notificationSettings.sound })}
-                      className={`w-12 h-7 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all ${
                         notificationSettings.sound ? 'bg-indigo-500' : 'bg-gray-300'
                       }`}
                     >
-                      <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.sound ? 'translate-x-5' : 'translate-x-0.5'
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        notificationSettings.sound ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -249,37 +278,33 @@ export default function Settings() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">主题</label>
-                    <select
-                      value={generalSettings.theme}
-                      onChange={(e) => setGeneralSettings({ ...generalSettings, theme: e.target.value as 'light' | 'dark' })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all appearance-none cursor-pointer"
+                    <button
+                      onClick={() => setThemeModalOpen(true)}
+                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <option value="light">浅色模式</option>
-                      <option value="dark">深色模式</option>
-                    </select>
+                      <span>{themeOptions.find(o => o.value === generalSettings.theme)?.label || generalSettings.theme}</span>
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
+                    </button>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">语言</label>
-                    <select
-                      value={generalSettings.language}
-                      onChange={(e) => setGeneralSettings({ ...generalSettings, language: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all appearance-none cursor-pointer"
+                    <button
+                      onClick={() => setLanguageModalOpen(true)}
+                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <option value="zh-CN">中文</option>
-                      <option value="en-US">English</option>
-                    </select>
+                      <span>{languageOptions.find(o => o.value === generalSettings.language)?.label || generalSettings.language}</span>
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
+                    </button>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">时区</label>
-                    <select
-                      value={generalSettings.timezone}
-                      onChange={(e) => setGeneralSettings({ ...generalSettings, timezone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all appearance-none cursor-pointer"
+                    <button
+                      onClick={() => setTimezoneModalOpen(true)}
+                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <option value="Asia/Shanghai">Asia/Shanghai (UTC+8)</option>
-                      <option value="UTC">UTC</option>
-                      <option value="America/New_York">America/New_York (UTC-5)</option>
-                    </select>
+                      <span>{timezoneOptions.find(o => o.value === generalSettings.timezone)?.label || generalSettings.timezone}</span>
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
+                    </button>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">检测间隔</label>
@@ -327,12 +352,12 @@ export default function Settings() {
                   </div>
                   <button
                     onClick={() => updatePublicSettings({ is_enabled: !publicSettings.is_enabled })}
-                    className={`w-12 h-7 rounded-full transition-all ${
+                    className={`relative w-14 h-8 rounded-full transition-all ${
                       publicSettings.is_enabled ? 'bg-indigo-500' : 'bg-gray-300'
                     }`}
                   >
-                    <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                      publicSettings.is_enabled ? 'translate-x-5' : 'translate-x-0.5'
+                    <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                      publicSettings.is_enabled ? 'left-7' : 'left-1'
                     }`} />
                   </button>
                 </div>
@@ -383,14 +408,13 @@ export default function Settings() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">布局方式</label>
-                        <select
-                          value={publicSettings.layout || 'grid'}
-                          onChange={(e) => updatePublicSettings({ layout: e.target.value as 'grid' | 'list' })}
-                          className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all appearance-none cursor-pointer"
+                        <button
+                          onClick={() => setLayoutModalOpen(true)}
+                          className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                         >
-                          <option value="grid">网格布局</option>
-                          <option value="list">列表布局</option>
-                        </select>
+                          <span>{layoutOptions.find(o => o.value === (publicSettings.layout || 'grid'))?.label || (publicSettings.layout || 'grid')}</span>
+                          <ChevronDown className="w-5 h-5 text-gray-500" />
+                        </button>
                       </div>
                     </div>
 
@@ -436,12 +460,12 @@ export default function Settings() {
                         </div>
                         <button
                           onClick={() => updatePublicSettings({ show_stats: !publicSettings.show_stats })}
-                          className={`w-12 h-7 rounded-full transition-all ${
+                          className={`relative w-14 h-8 rounded-full transition-all ${
                             publicSettings.show_stats ? 'bg-indigo-500' : 'bg-gray-300'
                           }`}
                         >
-                          <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                            publicSettings.show_stats ? 'translate-x-5' : 'translate-x-0.5'
+                          <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.show_stats ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
@@ -453,12 +477,12 @@ export default function Settings() {
                         </div>
                         <button
                           onClick={() => updatePublicSettings({ show_chart: !publicSettings.show_chart })}
-                          className={`w-12 h-7 rounded-full transition-all ${
+                          className={`relative w-14 h-8 rounded-full transition-all ${
                             publicSettings.show_chart ? 'bg-indigo-500' : 'bg-gray-300'
                           }`}
                         >
-                          <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                            publicSettings.show_chart ? 'translate-x-5' : 'translate-x-0.5'
+                          <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.show_chart ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
@@ -489,12 +513,12 @@ export default function Settings() {
                               onClick={() => {
                                 updateServer(server.id, { is_public: !server.is_public });
                               }}
-                              className={`w-12 h-7 rounded-full transition-all ${
+                              className={`relative w-14 h-8 rounded-full transition-all ${
                                 server.is_public ? 'bg-indigo-500' : 'bg-gray-300'
                               }`}
                             >
-                              <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                                server.is_public ? 'translate-x-5' : 'translate-x-0.5'
+                              <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                                server.is_public ? 'left-7' : 'left-1'
                               }`} />
                             </button>
                           </div>
@@ -554,6 +578,42 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      <SelectModal
+        isOpen={themeModalOpen}
+        onClose={() => setThemeModalOpen(false)}
+        title="选择主题"
+        options={themeOptions}
+        selectedValue={generalSettings.theme}
+        onSelect={(value) => setGeneralSettings({ ...generalSettings, theme: value as 'light' | 'dark' })}
+      />
+
+      <SelectModal
+        isOpen={languageModalOpen}
+        onClose={() => setLanguageModalOpen(false)}
+        title="选择语言"
+        options={languageOptions}
+        selectedValue={generalSettings.language}
+        onSelect={(value) => setGeneralSettings({ ...generalSettings, language: value })}
+      />
+
+      <SelectModal
+        isOpen={timezoneModalOpen}
+        onClose={() => setTimezoneModalOpen(false)}
+        title="选择时区"
+        options={timezoneOptions}
+        selectedValue={generalSettings.timezone}
+        onSelect={(value) => setGeneralSettings({ ...generalSettings, timezone: value })}
+      />
+
+      <SelectModal
+        isOpen={layoutModalOpen}
+        onClose={() => setLayoutModalOpen(false)}
+        title="选择布局方式"
+        options={layoutOptions}
+        selectedValue={publicSettings.layout || 'grid'}
+        onSelect={(value) => updatePublicSettings({ layout: value as 'grid' | 'list' })}
+      />
     </div>
   );
 }
