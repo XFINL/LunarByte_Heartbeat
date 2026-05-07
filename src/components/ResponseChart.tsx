@@ -3,10 +3,15 @@ import type { MonitorLog } from '@/types';
 
 interface ResponseChartProps {
   logs: MonitorLog[];
+  darkMode?: boolean;
 }
 
-export default function ResponseChart({ logs }: ResponseChartProps) {
+export default function ResponseChart({ logs, darkMode = false }: ResponseChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const textColor = darkMode ? '#94a3b8' : '#374151';
+  const gridColor = darkMode ? 'rgba(255,255,255,0.1)' : '#e5e7eb';
+  const bgColor = darkMode ? 'rgba(255,255,255,0.05)' : '#f9fafb';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,7 +34,7 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
 
     ctx.clearRect(0, 0, width, height);
 
-    ctx.fillStyle = '#f8fafc';
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, width, height);
 
     const values = logs.map((log) => log.response_time);
@@ -37,7 +42,7 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
     const minValue = Math.min(...values, 0);
     const range = maxValue - minValue || 1;
 
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = gridColor;
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
       const y = padding.top + (chartHeight / 4) * i;
@@ -47,7 +52,7 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
       ctx.stroke();
 
       const value = maxValue - (range / 4) * i;
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = textColor;
       ctx.font = '10px sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText(`${Math.round(value)}ms`, padding.left - 8, y + 3);
@@ -55,8 +60,13 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
 
     if (logs.length > 0) {
       const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
-      gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
-      gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+      if (darkMode) {
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+      } else {
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+      }
 
       ctx.beginPath();
       ctx.moveTo(padding.left, height - padding.bottom);
@@ -102,12 +112,12 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
         ctx.fill();
         ctx.beginPath();
         ctx.arc(x, y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = darkMode ? '#1f2937' : '#ffffff';
         ctx.fill();
       });
     }
 
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = textColor;
     ctx.font = '10px sans-serif';
     ctx.textAlign = 'center';
     logs.forEach((log, index) => {
@@ -117,11 +127,11 @@ export default function ResponseChart({ logs }: ResponseChartProps) {
       ctx.fillText(label, x, height - 10);
     });
 
-  }, [logs]);
+  }, [logs, darkMode, textColor, gridColor, bgColor]);
 
   return (
-    <div className="glass rounded-2xl p-5">
-      <h4 className="font-semibold text-gray-800 mb-4">响应时间趋势</h4>
+    <div className={`rounded-2xl p-5 ${darkMode ? 'bg-white/10 backdrop-blur-xl border border-white/10' : 'glass'}`}>
+      <h4 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>响应时间趋势</h4>
       <canvas
         ref={canvasRef}
         className="w-full h-48"

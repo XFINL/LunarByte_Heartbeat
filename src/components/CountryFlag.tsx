@@ -24,17 +24,17 @@ const countryCodes: Record<string, string> = {
 export default function CountryFlag({ countryCode, size = 'sm' }: CountryFlagProps) {
   const code = countryCodes[countryCode] || countryCode.toLowerCase();
   
-  const sizeMap = {
-    sm: 'w40',
-    md: 'w80',
-    lg: 'w160',
+  const widthMap = {
+    sm: 20,
+    md: 32,
+    lg: 48,
   };
 
   return (
     <img
-      src={`https://flagcdn.asia/${sizeMap[size]}/${code}.png`}
+      src={`https://flagcdn.com/w${widthMap[size]}/${code}.png`}
       alt={countryCode}
-      className={`rounded-sm shadow-sm object-cover`}
+      className="rounded-sm shadow-sm object-cover"
       loading="lazy"
     />
   );

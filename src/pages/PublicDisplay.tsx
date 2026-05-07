@@ -279,10 +279,7 @@ export default function PublicDisplay() {
           </div>
 
           {publicSettings.show_chart && publicServers.length > 0 && (
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/10">
-              <h3 className="font-semibold text-white mb-4">响应时间趋势</h3>
-              <ResponseChart logs={sampleLogs} />
-            </div>
+            <ResponseChart logs={sampleLogs} darkMode={true} />
           )}
         </div>
 
