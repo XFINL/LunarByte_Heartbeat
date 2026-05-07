@@ -9,6 +9,7 @@ export interface Server {
   last_check: string;
   created_at: string;
   updated_at: string;
+  is_public: boolean;
 }
 
 export interface MonitorLog {
@@ -36,3 +37,11 @@ export interface OverviewStats {
 }
 
 export type PageType = 'dashboard' | 'servers' | 'settings';
+
+export interface PublicDisplaySettings {
+  is_enabled: boolean;
+  refresh_interval: number;
+  show_stats: boolean;
+  show_chart: boolean;
+  public_servers: number[];
+}

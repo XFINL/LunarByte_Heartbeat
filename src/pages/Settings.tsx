@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
-import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save } from 'lucide-react';
+import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
+import { useServerStore } from '@/store/serverStore';
 
 interface NotificationSettings {
   email: boolean;
@@ -16,7 +17,8 @@ interface GeneralSettings {
 }
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security'>('profile');
+  const { servers, publicSettings, updatePublicSettings } = useServerStore();
+  const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security' | 'public'>('profile');
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     email: true,
     webhook: false,
@@ -28,16 +30,36 @@ export default function Settings() {
     timezone: 'Asia/Shanghai',
     checkInterval: 60,
   });
+  const [copied, setCopied] = useState(false);
 
   const tabs = [
     { id: 'profile' as const, label: '个人资料', icon: User },
     { id: 'notifications' as const, label: '通知设置', icon: Bell },
     { id: 'general' as const, label: '通用设置', icon: Globe },
+    { id: 'public' as const, label: '公共显示', icon: Monitor },
     { id: 'security' as const, label: '安全', icon: Shield },
   ];
 
   const handleSave = () => {
     alert('设置已保存');
+  };
+
+  const handleCopyUrl = () => {
+    const url = `${window.location.origin}/public`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const toggleServerPublic = (serverId: number) => {
+    const currentPublic = publicSettings.public_servers.includes(serverId);
+    let newPublicServers: number[];
+    if (currentPublic) {
+      newPublicServers = publicSettings.public_servers.filter((id) => id !== serverId);
+    } else {
+      newPublicServers = [...publicSettings.public_servers, serverId];
+    }
+    updatePublicSettings({ public_servers: newPublicServers });
   };
 
   return (
@@ -267,6 +289,7 @@ export default function Settings() {
                         value={generalSettings.checkInterval}
                         onChange={(e) => setGeneralSettings({ ...generalSettings, checkInterval: parseInt(e.target.value) || 60 })}
                         className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
+                        min="1"
                       />
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">秒</span>
                     </div>
@@ -285,6 +308,154 @@ export default function Settings() {
                     保存更改
                   </button>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'public' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-gray-800">公共显示设置</h3>
+
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+                      <Monitor className="w-5 h-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">启用公共显示</p>
+                      <p className="text-sm text-gray-500">开启后，可通过公共链接访问服务器状态面板</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => updatePublicSettings({ is_enabled: !publicSettings.is_enabled })}
+                    className={`w-12 h-7 rounded-full transition-all ${
+                      publicSettings.is_enabled ? 'bg-indigo-500' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
+                      publicSettings.is_enabled ? 'translate-x-5' : 'translate-x-0.5'
+                    }`} />
+                  </button>
+                </div>
+
+                {publicSettings.is_enabled && (
+                  <>
+                    <div className="p-4 rounded-xl bg-white/30">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">公共访问地址</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="text"
+                          readOnly
+                          value={`${window.location.origin}/public`}
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700"
+                        />
+                        <button
+                          onClick={handleCopyUrl}
+                          className="px-4 py-3 rounded-xl bg-white/50 hover:bg-white/80 transition-all"
+                          title="复制链接"
+                        >
+                          {copied ? <Save className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5 text-gray-600" />}
+                        </button>
+                        <a
+                          href="/public"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-3 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition-all flex items-center gap-2"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          预览
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">刷新间隔</label>
+                        <div className="relative">
+                          <input
+                            type="number"
+                            value={publicSettings.refresh_interval}
+                            onChange={(e) => updatePublicSettings({ refresh_interval: parseInt(e.target.value) || 30 })}
+                            className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
+                            min="5"
+                          />
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">秒</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                        <div>
+                          <p className="font-medium text-gray-800">显示统计面板</p>
+                          <p className="text-sm text-gray-500">在公共页面显示服务器统计信息</p>
+                        </div>
+                        <button
+                          onClick={() => updatePublicSettings({ show_stats: !publicSettings.show_stats })}
+                          className={`w-12 h-7 rounded-full transition-all ${
+                            publicSettings.show_stats ? 'bg-indigo-500' : 'bg-gray-300'
+                          }`}
+                        >
+                          <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.show_stats ? 'translate-x-5' : 'translate-x-0.5'
+                          }`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                        <div>
+                          <p className="font-medium text-gray-800">显示趋势图表</p>
+                          <p className="text-sm text-gray-500">在公共页面显示响应时间趋势图表</p>
+                        </div>
+                        <button
+                          onClick={() => updatePublicSettings({ show_chart: !publicSettings.show_chart })}
+                          className={`w-12 h-7 rounded-full transition-all ${
+                            publicSettings.show_chart ? 'bg-indigo-500' : 'bg-gray-300'
+                          }`}
+                        >
+                          <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.show_chart ? 'translate-x-5' : 'translate-x-0.5'
+                          }`} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">选择要公开的服务器</label>
+                      <div className="space-y-2">
+                        {servers.map((server) => (
+                          <div
+                            key={server.id}
+                            className="flex items-center justify-between p-3 rounded-xl bg-white/30 hover:bg-white/50 transition-all"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                server.status === 'online' ? 'status-online' : 
+                                server.status === 'offline' ? 'status-offline' : 'status-pending'
+                              }`}>
+                                {server.status === 'online' ? <Eye className="w-4 h-4 text-white" /> : 
+                                 server.status === 'offline' ? <EyeOff className="w-4 h-4 text-white" /> : <Clock className="w-4 h-4 text-white" />}
+                              </div>
+                              <div>
+                                <p className="font-medium text-gray-800">{server.name}</p>
+                                <p className="text-sm text-gray-500">{server.hostname}:{server.port}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => toggleServerPublic(server.id)}
+                              className={`w-12 h-7 rounded-full transition-all ${
+                                publicSettings.public_servers.includes(server.id) ? 'bg-indigo-500' : 'bg-gray-300'
+                              }`}
+                            >
+                              <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
+                                publicSettings.public_servers.includes(server.id) ? 'translate-x-5' : 'translate-x-0.5'
+                              }`} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             )}
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Server, ServerFormData, OverviewStats, MonitorLog } from '@/types';
+import type { Server, ServerFormData, OverviewStats, MonitorLog, PublicDisplaySettings } from '@/types';
 
 const mockServers: Server[] = [
   {
@@ -13,6 +13,7 @@ const mockServers: Server[] = [
     last_check: new Date().toISOString(),
     created_at: '2024-01-15T10:00:00Z',
     updated_at: new Date().toISOString(),
+    is_public: true,
   },
   {
     id: 2,
@@ -25,6 +26,7 @@ const mockServers: Server[] = [
     last_check: new Date().toISOString(),
     created_at: '2024-01-16T08:30:00Z',
     updated_at: new Date().toISOString(),
+    is_public: true,
   },
   {
     id: 3,
@@ -37,6 +39,7 @@ const mockServers: Server[] = [
     last_check: new Date().toISOString(),
     created_at: '2024-01-17T14:20:00Z',
     updated_at: new Date().toISOString(),
+    is_public: false,
   },
   {
     id: 4,
@@ -49,6 +52,7 @@ const mockServers: Server[] = [
     last_check: new Date(Date.now() - 300000).toISOString(),
     created_at: '2024-01-18T09:15:00Z',
     updated_at: new Date().toISOString(),
+    is_public: true,
   },
   {
     id: 5,
@@ -61,6 +65,7 @@ const mockServers: Server[] = [
     last_check: new Date().toISOString(),
     created_at: '2024-01-19T11:45:00Z',
     updated_at: new Date().toISOString(),
+    is_public: true,
   },
   {
     id: 6,
@@ -73,6 +78,7 @@ const mockServers: Server[] = [
     last_check: '',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
+    is_public: false,
   },
 ];
 
@@ -85,20 +91,33 @@ const mockLogs: MonitorLog[] = [
   { id: 6, server_id: 1, status: 'online', response_time: 55, error_message: null, created_at: new Date(Date.now() - 300000).toISOString() },
 ];
 
+const defaultPublicSettings: PublicDisplaySettings = {
+  is_enabled: true,
+  refresh_interval: 30,
+  show_stats: true,
+  show_chart: true,
+  public_servers: [1, 2, 4, 5],
+};
+
 interface ServerStore {
   servers: Server[];
   logs: MonitorLog[];
+  publicSettings: PublicDisplaySettings;
   addServer: (data: ServerFormData) => void;
-  updateServer: (id: number, data: Partial<ServerFormData>) => void;
+  updateServer: (id: number, data: Partial<ServerFormData & { is_public?: boolean }>) => void;
   deleteServer: (id: number) => void;
   updateServerStatus: (id: number, status: Server['status'], response_time: number) => void;
+  toggleServerPublic: (id: number) => void;
   getStats: () => OverviewStats;
   getServerLogs: (serverId: number) => MonitorLog[];
+  getPublicServers: () => Server[];
+  updatePublicSettings: (settings: Partial<PublicDisplaySettings>) => void;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
   servers: mockServers,
   logs: mockLogs,
+  publicSettings: defaultPublicSettings,
 
   addServer: (data) => {
     const newServer: Server = {
@@ -109,6 +128,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       last_check: '',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      is_public: false,
     };
     set((state) => ({ servers: [...state.servers, newServer] }));
   },
@@ -143,6 +163,16 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     }));
   },
 
+  toggleServerPublic: (id) => {
+    set((state) => ({
+      servers: state.servers.map((server) =>
+        server.id === id
+          ? { ...server, is_public: !server.is_public, updated_at: new Date().toISOString() }
+          : server
+      ),
+    }));
+  },
+
   getStats: () => {
     const { servers } = get();
     const total = servers.length;
@@ -163,5 +193,14 @@ export const useServerStore = create<ServerStore>((set, get) => ({
   getServerLogs: (serverId) => {
     const { logs } = get();
     return logs.filter((log) => log.server_id === serverId);
+  },
+
+  getPublicServers: () => {
+    const { servers, publicSettings } = get();
+    return servers.filter((server) => publicSettings.public_servers.includes(server.id));
+  },
+
+  updatePublicSettings: (settings) => {
+    set((state) => ({ publicSettings: { ...state.publicSettings, ...settings } }));
   },
 }));

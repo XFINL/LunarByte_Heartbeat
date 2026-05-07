@@ -24,7 +24,7 @@ export default function App() {
   return (
     <div className="min-h-screen">
       <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
-      <main className="ml-72 p-6">
+      <main className="ml-72 p-6 lg:ml-64 transition-all duration-300">
         {renderPage()}
       </main>
     </div>
