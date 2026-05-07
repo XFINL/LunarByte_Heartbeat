@@ -125,6 +125,7 @@ export const locales = {
       inputFooterText: '输入页脚文本',
       inputCustomCss: '输入自定义 CSS 样式...',
       notificationTemplatePlaceholder: '服务器 {{name}} 状态变为 {{status}}',
+      languageChanged: '语言已切换',
     },
     dashboard: {
       totalServers: '总服务器',
@@ -316,6 +317,7 @@ export const locales = {
       inputFooterText: 'Enter footer text',
       inputCustomCss: 'Enter custom CSS styles...',
       notificationTemplatePlaceholder: 'Server {{name}} status changed to {{status}}',
+      languageChanged: 'Language changed',
     },
     dashboard: {
       totalServers: 'Total Servers',
@@ -507,6 +509,7 @@ export const locales = {
       inputFooterText: 'フッターテキストを入力',
       inputCustomCss: 'カスタムCSSスタイルを入力...',
       notificationTemplatePlaceholder: 'サーバー {{name}} の状態が {{status}} に変化しました',
+      languageChanged: '言語が変更されました',
     },
     dashboard: {
       totalServers: '総サーバー数',

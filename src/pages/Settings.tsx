@@ -1,10 +1,10 @@
 import Header from '@/components/Header';
 import SelectModal from '@/components/SelectModal';
-import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Zap, Check, Puzzle, X } from 'lucide-react';
+import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle, X } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 import { useLanguageStore } from '@/store/languageStore';
-import { getTimezones, getLanguages } from '@/locales';
+import { getTimezones, getLanguages, LocaleKey } from '@/locales';
 
 interface NotificationSettings {
   email: boolean;
@@ -22,7 +22,7 @@ interface GeneralSettings {
 }
 
 export default function Settings() {
-  const { t } = useLanguageStore();
+  const { t, locale, setLocale } = useLanguageStore();
   const { servers, publicSettings, updatePublicSettings, updateServer } = useServerStore();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security' | 'public' | 'notification-config' | 'plugins' | 'theme-manager'>('profile');
   const [pluginUploadModalOpen, setPluginUploadModalOpen] = useState(false);
@@ -36,10 +36,11 @@ export default function Settings() {
   });
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>({
     theme: 'light',
-    language: 'zh-CN',
+    language: locale,
     timezone: 'Asia/Shanghai',
     checkInterval: 60,
   });
+  const [showLanguageToast, setShowLanguageToast] = useState(false);
   const [copied, setCopied] = useState(false);
   const [themeModalOpen, setThemeModalOpen] = useState(false);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
@@ -882,7 +883,13 @@ export default function Settings() {
         title={t('settings.selectLanguage')}
         options={languageOptions}
         selectedValue={generalSettings.language}
-        onSelect={(value) => setGeneralSettings({ ...generalSettings, language: value })}
+        onSelect={(value) => {
+          setGeneralSettings({ ...generalSettings, language: value });
+          setLocale(value as LocaleKey);
+          setLanguageModalOpen(false);
+          setShowLanguageToast(true);
+          setTimeout(() => setShowLanguageToast(false), 3000);
+        }}
       />
 
       <SelectModal
@@ -1002,6 +1009,20 @@ export default function Settings() {
                   {t('settings.installTheme')}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLanguageToast && (
+        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+          <div className="glass rounded-2xl px-6 py-4 shadow-2xl flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400/70 to-emerald-300/70 flex items-center justify-center">
+              <Check className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="font-medium text-gray-800">{t('settings.languageChanged')}</p>
+              <p className="text-sm text-gray-500">{languageOptions.find(o => o.value === locale)?.label}</p>
             </div>
           </div>
         </div>
