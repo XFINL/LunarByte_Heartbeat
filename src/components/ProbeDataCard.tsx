@@ -1,5 +1,6 @@
 import { Cpu, HardDrive, Wifi, Globe, Clock, Server, MapPin } from 'lucide-react';
 import type { ProbeData } from '@/types';
+import CountryFlag from './CountryFlag';
 
 interface ProbeDataCardProps {
   data: ProbeData;
@@ -144,10 +145,13 @@ export default function ProbeDataCard({ data }: ProbeDataCardProps) {
             <MapPin className="w-3 h-3 text-red-500" />
             <span className="text-xs text-gray-500">IP位置</span>
           </div>
-          <p className="text-xs text-gray-600">
-            {data.ip_location.country} {data.ip_location.region} {data.ip_location.city}
-          </p>
-          <p className="text-xs text-gray-400">
+          <div className="flex items-center gap-2">
+            <CountryFlag countryCode={data.ip_location.country} />
+            <p className="text-xs text-gray-600">
+              {data.ip_location.country} {data.ip_location.region} {data.ip_location.city}
+            </p>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
             IP: {data.ip_location.ip} · ISP: {data.ip_location.isp}
           </p>
         </div>

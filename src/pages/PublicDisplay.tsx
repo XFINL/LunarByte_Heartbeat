@@ -1,8 +1,9 @@
-import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe } from 'lucide-react';
+import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 import ResponseChart from '@/components/ResponseChart';
 import HeartbeatDot from '@/components/HeartbeatDot';
+import CountryFlag from '@/components/CountryFlag';
 
 export default function PublicDisplay() {
   const { publicSettings, getPublicServers, getServerLogs, getStats, updateServerStatus } = useServerStore();
@@ -21,8 +22,10 @@ export default function PublicDisplay() {
     const refreshInterval = setInterval(() => {
       const servers = getPublicServers();
       servers.forEach((server) => {
-        const isOnline = Math.random() > 0.1;
-        updateServerStatus(server.id, isOnline ? 'online' : 'offline', Math.floor(Math.random() * 100) + 10);
+        if (server.protocol !== 'probe') {
+          const isOnline = Math.random() > 0.1;
+          updateServerStatus(server.id, isOnline ? 'online' : 'offline', Math.floor(Math.random() * 100) + 10);
+        }
       });
     }, publicSettings.refresh_interval * 1000);
 
@@ -44,6 +47,28 @@ export default function PublicDisplay() {
       default:
         return { label: '未知', class: 'bg-gray-400', icon: Server };
     }
+  };
+
+  const formatBytes = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const formatUptime = (seconds: number) => {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    if (days > 0) return `${days}天 ${hours}小时`;
+    if (hours > 0) return `${hours}小时`;
+    return `${Math.floor((seconds % 3600) / 60)}分钟`;
+  };
+
+  const getUsageColor = (usage: number) => {
+    if (usage < 50) return 'text-green-400';
+    if (usage < 80) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
   const pageTitle = publicSettings.title || '服务器监控';
@@ -135,11 +160,73 @@ export default function PublicDisplay() {
                           <Server className="w-6 h-6 text-indigo-400" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg">{server.name}</h3>
-                          <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol})</p>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-lg">{server.name}</h3>
+                            {server.protocol === 'probe' && server.probe_data?.ip_location && (
+                              <CountryFlag countryCode={server.probe_data.ip_location.country} />
+                            )}
+                          </div>
+                          <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol === 'probe' ? '探针' : server.protocol})</p>
                         </div>
                       </div>
                     </div>
+
+                    {server.protocol === 'probe' && server.probe_data && (
+                      <div className="mb-4 space-y-3">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <div className="text-xs text-slate-400 mb-1">CPU</div>
+                            <div className={`text-lg font-bold ${getUsageColor(server.probe_data.cpu_usage)}`}>
+                              {server.probe_data.cpu_usage.toFixed(1)}%
+                            </div>
+                            <div className="text-xs text-slate-500">{server.probe_data.cpu_cores}核</div>
+                          </div>
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <div className="text-xs text-slate-400 mb-1">内存</div>
+                            <div className={`text-lg font-bold ${getUsageColor(server.probe_data.memory_usage)}`}>
+                              {server.probe_data.memory_usage.toFixed(1)}%
+                            </div>
+                            <div className="text-xs text-slate-500">{server.probe_data.memory_used}MB / {server.probe_data.memory_total}MB</div>
+                          </div>
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <div className="text-xs text-slate-400 mb-1">磁盘</div>
+                            <div className={`text-lg font-bold ${getUsageColor(server.probe_data.disk_usage)}`}>
+                              {server.probe_data.disk_usage.toFixed(1)}%
+                            </div>
+                            <div className="text-xs text-slate-500">{server.probe_data.disk_used} / {server.probe_data.disk_total}</div>
+                          </div>
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <div className="text-xs text-slate-400 mb-1">网络</div>
+                            <div className="text-sm">
+                              <span className="text-green-400">↑{formatBytes(server.probe_data.network_tx)}</span>
+                              <span className="text-blue-400 ml-2">↓{formatBytes(server.probe_data.network_rx)}</span>
+                            </div>
+                            <div className="text-xs text-slate-500">负载: {server.probe_data.load_avg.join('/')}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/5 rounded-lg p-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-slate-400">系统: {server.probe_data.os_name}</span>
+                            <span className="text-slate-400">运行: {formatUptime(server.probe_data.uptime)}</span>
+                          </div>
+                        </div>
+
+                        {server.probe_data.ip_location && (
+                          <div className="bg-white/5 rounded-lg p-2">
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-3 h-3 text-red-400" />
+                              <span className="text-xs text-slate-300">
+                                {server.probe_data.ip_location.city}, {server.probe_data.ip_location.region}, {server.probe_data.ip_location.country}
+                              </span>
+                            </div>
+                            <div className="text-xs text-slate-500 mt-1">
+                              ISP: {server.probe_data.ip_location.isp}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -149,7 +236,7 @@ export default function PublicDisplay() {
                         <span className="font-medium">{statusConfig.label}</span>
                       </div>
 
-                      {server.status === 'online' && (
+                      {server.status === 'online' && server.protocol !== 'probe' && (
                         <div className="text-right">
                           <span className="text-2xl font-bold text-green-400">{server.response_time}</span>
                           <span className="text-slate-400 text-sm ml-1">ms</span>
