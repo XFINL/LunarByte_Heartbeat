@@ -4,37 +4,37 @@ interface CountryFlagProps {
 }
 
 const countryCodes: Record<string, string> = {
-  'Iceland': 'IS',
-  'United States': 'US',
-  'China': 'CN',
-  'Japan': 'JP',
-  'Germany': 'DE',
-  'United Kingdom': 'GB',
-  'France': 'FR',
-  'Canada': 'CA',
-  'Australia': 'AU',
-  'Singapore': 'SG',
-  'South Korea': 'KR',
-  'Netherlands': 'NL',
-  'Russia': 'RU',
-  'Brazil': 'BR',
-  'India': 'IN',
+  'Iceland': 'is',
+  'United States': 'us',
+  'China': 'cn',
+  'Japan': 'jp',
+  'Germany': 'de',
+  'United Kingdom': 'gb',
+  'France': 'fr',
+  'Canada': 'ca',
+  'Australia': 'au',
+  'Singapore': 'sg',
+  'South Korea': 'kr',
+  'Netherlands': 'nl',
+  'Russia': 'ru',
+  'Brazil': 'br',
+  'India': 'in',
 };
 
 export default function CountryFlag({ countryCode, size = 'sm' }: CountryFlagProps) {
-  const code = countryCodes[countryCode] || countryCode.toUpperCase();
+  const code = countryCodes[countryCode] || countryCode.toLowerCase();
   
-  const sizeClasses = {
-    sm: 'w-4 h-3',
-    md: 'w-6 h-4',
-    lg: 'w-8 h-6',
+  const sizeMap = {
+    sm: 'w40',
+    md: 'w80',
+    lg: 'w160',
   };
 
   return (
     <img
-      src={`https://flagcdn.com/${size === 'lg' ? '48' : size === 'md' ? '32' : '24'}/${code.toLowerCase()}.png`}
+      src={`https://flagcdn.asia/${sizeMap[size]}/${code}.png`}
       alt={countryCode}
-      className={`${sizeClasses[size]} rounded-sm shadow-sm object-cover`}
+      className={`rounded-sm shadow-sm object-cover`}
       loading="lazy"
     />
   );
