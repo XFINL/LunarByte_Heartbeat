@@ -1,57 +1,62 @@
-# React + TypeScript + Vite
+# ServerPulse - サーバー監視パネル / Server Monitoring Panel / 伺服器監控面板
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 日本語 (Japanese)
 
-Currently, two official plugins are available:
+### 機能紹介
+- **ダッシュボード**: サーバーの状態を一覧表示し、レスポンスタイム、オンライン率などの統計データを表示
+- **サーバー管理**: サーバーの追加・編集・削除、プロトコル（HTTP/HTTPS/TCP）の設定
+- **設定**: 通知設定（メール/Webhook/サウンド）、一般設定（テーマ/言語/タイムゾーン）、セキュリティ設定
+- **公開表示**: サーバーの状態を公開ページで表示、統計パネルとチャートの表示切り替え可能
+- **レスポンシブデザイン**: モバイルデバイスからデスクトップまで最適化されたUI
+- **ガラスモーフィズムデザイン**: 美しいガラス風のUIデザイン
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 使い方
+1. `pnpm install` で依存関係をインストール
+2. `pnpm run dev` で開発サーバーを起動
+3. 管理パネル: http://localhost:5173/
+4. 公開表示ページ: http://localhost:5173/public
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## English
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Features
+- **Dashboard**: Display server status at a glance, show statistics including response time and uptime rate
+- **Server Management**: Add/edit/delete servers, configure protocol (HTTP/HTTPS/TCP)
+- **Settings**: Notification settings (Email/Webhook/Sound), general settings (Theme/Language/Timezone), security settings
+- **Public Display**: Show server status on public page, toggle stats panel and chart display
+- **Responsive Design**: Optimized UI for mobile devices to desktop
+- **Glass Morphism Design**: Beautiful glass-style UI design
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Usage
+1. Install dependencies with `pnpm install`
+2. Start development server with `pnpm run dev`
+3. Admin Panel: http://localhost:5173/
+4. Public Display Page: http://localhost:5173/public
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 繁體中文 (Traditional Chinese)
+
+### 功能介紹
+- **儀表板**: 一覽顯示伺服器狀態，顯示回應時間、上線率等統計數據
+- **伺服器管理**: 新增/編輯/刪除伺服器，設定通訊協定（HTTP/HTTPS/TCP）
+- **設定**: 通知設定（郵件/Webhook/聲音）、一般設定（主題/語言/時區）、安全性設定
+- **公開顯示**: 在公開頁面顯示伺服器狀態，可切換統計面板和圖表顯示
+- **響應式設計**: 從手機到桌面都最佳化的UI
+- **玻璃態設計**: 美麗的玻璃風格UI設計
+
+### 使用方式
+1. 使用 `pnpm install` 安裝相依套件
+2. 使用 `pnpm run dev` 啟動開發伺服器
+3. 管理面板: http://localhost:5173/
+4. 公開顯示頁面: http://localhost:5173/public
+
+---
+
+## Tech Stack / 技術棧
+- React 18 + TypeScript
+- Vite
+- Tailwind CSS
+- Zustand (State Management)
+- Lucide React (Icons)
