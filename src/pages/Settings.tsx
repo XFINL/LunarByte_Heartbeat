@@ -839,36 +839,19 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Sparkles className="w-5 h-5 text-pink-500/80" />
-                      <span className="font-medium text-gray-800">主题商店</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">从官方主题商店发现并下载更多主题</p>
-                    <button 
-                      onClick={() => alert('内测中暂无资格')}
-                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
-                    >
-                      <Palette className="w-4 h-4" />
-                      浏览主题商店
-                    </button>
+                <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/80 to-cyan-50/80 border border-blue-100/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Globe className="w-5 h-5 text-blue-500/80" />
+                    <span className="font-medium text-gray-800">上传主题</span>
                   </div>
-
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/80 to-cyan-50/80 border border-blue-100/50">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Globe className="w-5 h-5 text-blue-500/80" />
-                      <span className="font-medium text-gray-800">上传主题</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">上传 .thk 格式的主题文件进行安装</p>
-                    <button 
-                      onClick={() => setThemeUploadModalOpen(true)}
-                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
-                    >
-                      <Zap className="w-4 h-4" />
-                      选择主题文件
-                    </button>
-                  </div>
+                  <p className="text-sm text-gray-600 mb-4">上传 .thk 格式的主题文件进行安装</p>
+                  <button 
+                    onClick={() => setThemeUploadModalOpen(true)}
+                    className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <Zap className="w-4 h-4" />
+                    选择主题文件
+                  </button>
                 </div>
 
                 <div className="flex gap-3 pt-4">
