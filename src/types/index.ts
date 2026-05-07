@@ -38,8 +38,8 @@ export interface ProbeData {
   memory_total: number;
   memory_used: number;
   disk_usage: number;
-  disk_total: number;
-  disk_used: number;
+  disk_total: string;
+  disk_used: string;
   network_rx: number;
   network_tx: number;
   gpu_usage?: number;

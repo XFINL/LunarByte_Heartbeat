@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import SelectModal from '@/components/SelectModal';
-import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Plugins, Sparkles, Volume2, Zap, Check } from 'lucide-react';
+import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 
@@ -65,7 +65,7 @@ export default function Settings() {
     { id: 'profile' as const, label: '个人资料', icon: User },
     { id: 'notifications' as const, label: '通知设置', icon: Bell },
     { id: 'notification-config' as const, label: '通知配置', icon: Sparkles },
-    { id: 'plugins' as const, label: '插件管理', icon: Plugins },
+    { id: 'plugins' as const, label: '插件管理', icon: Puzzle },
     { id: 'theme-manager' as const, label: '主题管理', icon: Palette },
     { id: 'general' as const, label: '通用设置', icon: Globe },
     { id: 'public' as const, label: '公共显示', icon: Monitor },
@@ -714,7 +714,7 @@ export default function Settings() {
                   <div className="p-4 rounded-xl bg-white/30 hover:bg-white/50 transition-all">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-400/70 to-gray-300/70 flex items-center justify-center">
-                        <Plugins className="w-6 h-6 text-white" />
+                        <Puzzle className="w-6 h-6 text-white" />
                       </div>
                       <div>
                         <h4 className="font-medium text-gray-800">Webhook插件</h4>
@@ -755,7 +755,7 @@ export default function Settings() {
                   </div>
                   <p className="text-sm text-gray-600 mb-4">发现并安装更多插件来扩展功能</p>
                   <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
-                    <Plugins className="w-4 h-4" />
+                    <Puzzle className="w-4 h-4" />
                     浏览插件市场
                   </button>
                 </div>

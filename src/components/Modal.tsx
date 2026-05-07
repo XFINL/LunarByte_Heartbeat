@@ -49,7 +49,7 @@ export default function Modal({ isOpen, onClose, onSave, title, server }: ModalP
         hostname: server.hostname,
         port: server.port,
         protocol: server.protocol,
-        isPublic: server.isPublic || false,
+        isPublic: server.is_public || false,
       });
       setProbeSecret(server.probe_secret || '');
     } else {
