@@ -1,6 +1,7 @@
 import { Server, Clock, Wifi, WifiOff, Loader, MoreVertical, Eye, Activity } from 'lucide-react';
 import type { Server as ServerType } from '@/types';
 import { useState } from 'react';
+import { useLanguageStore } from '@/store/languageStore';
 import HeartbeatDot from './HeartbeatDot';
 import ProbeDataCard from './ProbeDataCard';
 
@@ -12,17 +13,18 @@ interface ServerCardProps {
 
 export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps) {
   const [showMenu, setShowMenu] = useState(false);
+  const { t } = useLanguageStore();
 
   const getStatusConfig = () => {
     switch (server.status) {
       case 'online':
-        return { label: '在线', class: 'status-online', icon: Wifi };
+        return { label: t('common.online'), class: 'status-online', icon: Wifi };
       case 'offline':
-        return { label: '离线', class: 'status-offline', icon: WifiOff };
+        return { label: t('common.offline'), class: 'status-offline', icon: WifiOff };
       case 'pending':
-        return { label: '检测中', class: 'status-pending', icon: Loader };
+        return { label: t('common.pending'), class: 'status-pending', icon: Loader };
       default:
-        return { label: '未知', class: 'bg-gray-400', icon: Server };
+        return { label: t('common.unknown'), class: 'bg-gray-400', icon: Server };
     }
   };
 
@@ -30,9 +32,9 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
   const StatusIcon = statusConfig.icon;
 
   const formatTime = (dateString: string) => {
-    if (!dateString) return '从未检测';
+    if (!dateString) return t('public.neverChecked');
     const date = new Date(dateString);
-    return date.toLocaleString('zh-CN', {
+    return date.toLocaleString(undefined, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -71,13 +73,13 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
                 onClick={() => { onEdit(server); setShowMenu(false); }}
                 className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-white/60 transition-all"
               >
-                编辑
+                {t('common.edit')}
               </button>
               <button
                 onClick={() => { onDelete(server.id); setShowMenu(false); }}
                 className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-50 transition-all"
               >
-                删除
+                {t('common.delete')}
               </button>
             </div>
           )}
@@ -109,14 +111,14 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
       <div className="mt-3 pt-3 border-t border-gray-200/50">
         <div className="flex items-center gap-2 mb-2">
           <Activity className="w-3 h-3 text-gray-400" />
-          <span className="text-xs text-gray-500">心跳记录（近1小时）</span>
+          <span className="text-xs text-gray-500">{t('public.heartbeatRecord')}（{t('public.last1Hour')}）</span>
         </div>
         <div className="flex items-center gap-1">
           {Array.from({ length: emptySlots }).map((_, i) => (
             <div
               key={`empty-${i}`}
               className="w-3 h-3 rounded-full bg-purple-400 opacity-60"
-              title="服务器未添加"
+              title={t('public.serverNotAdded')}
             />
           ))}
           {heartbeatRecords.map((record, index) => (
@@ -132,17 +134,17 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
 
       <div className="mt-3 pt-3 border-t border-gray-200/50 flex items-center gap-2 text-xs text-gray-500">
         <Clock className="w-3 h-3 flex-shrink-0" />
-        <span className="truncate">最后检测: {formatTime(server.last_check)}</span>
+        <span className="truncate">{t('public.lastCheck')}: {formatTime(server.last_check)}</span>
       </div>
 
       <div className="mt-3 flex items-center gap-2">
         <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-          {server.protocol === 'probe' ? '探针' : server.protocol.toUpperCase()}
+          {server.protocol === 'probe' ? t('public.probe') : server.protocol.toUpperCase()}
         </span>
         {server.is_public && (
           <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-pink-100/70 text-pink-500/80 flex items-center gap-1">
             <Eye className="w-3 h-3" />
-            公开
+            {t('servers.public')}
           </span>
         )}
       </div>

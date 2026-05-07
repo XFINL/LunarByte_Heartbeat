@@ -1,6 +1,7 @@
 import { X, Save, ChevronDown, Check, Copy, Terminal, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { Server, ServerFormData } from '@/types';
+import { useLanguageStore } from '@/store/languageStore';
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ interface ModalProps {
 }
 
 const protocols: Array<{ value: ServerFormData['protocol']; label: string; defaultPort: number }> = [
-  { value: 'probe', label: '探针', defaultPort: 9527 },
+  { value: 'probe', label: 'Probe', defaultPort: 9527 },
   { value: 'http', label: 'HTTP', defaultPort: 80 },
   { value: 'https', label: 'HTTPS', defaultPort: 443 },
   { value: 'tcp', label: 'TCP', defaultPort: 80 },
@@ -31,6 +32,7 @@ const protocols: Array<{ value: ServerFormData['protocol']; label: string; defau
 ];
 
 export default function Modal({ isOpen, onClose, onSave, title, server }: ModalProps) {
+  const { t } = useLanguageStore();
   const [formData, setFormData] = useState<ServerFormData>({
     name: '',
     hostname: '',
@@ -205,32 +207,32 @@ echo "Secret: ${probeSecret}"
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">服务器名称</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('servers.name')}</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
-              placeholder="输入服务器名称"
+              placeholder={t('servers.inputServerName')}
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">主机名/IP地址</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('servers.hostname')}</label>
             <input
               type="text"
               value={formData.hostname}
               onChange={(e) => setFormData({ ...formData, hostname: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
-              placeholder="例如: api.example.com 或 192.168.1.1"
+              placeholder={t('servers.inputHostname')}
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">端口</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('servers.port')}</label>
               <input
                 type="number"
                 value={formData.port}
@@ -243,7 +245,7 @@ echo "Secret: ${probeSecret}"
             </div>
 
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">协议</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('servers.protocol')}</label>
               <button
                 type="button"
                 onClick={() => setShowProtocolPicker(!showProtocolPicker)}
@@ -282,10 +284,10 @@ echo "Secret: ${probeSecret}"
               <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
                 <div className="flex items-center gap-2 mb-3">
                   <Terminal className="w-5 h-5 text-pink-500/80" />
-                  <span className="font-medium text-gray-800">探针安装脚本</span>
+                  <span className="font-medium text-gray-800">{t('servers.probeInstallScript')}</span>
                 </div>
                 <p className="text-sm text-gray-600 mb-3">
-                  请将以下脚本复制到目标服务器上执行，以安装探针客户端。
+                  {t('servers.probeInstallDesc')}
                 </p>
                 <div className="relative">
                   <pre className="bg-gray-900 text-green-400 p-4 rounded-xl text-xs overflow-x-auto max-h-60 font-mono">
@@ -295,16 +297,16 @@ echo "Secret: ${probeSecret}"
                     type="button"
                     onClick={handleCopyScript}
                     className="absolute top-2 right-2 p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all"
-                    title="复制脚本"
+                    title={t('servers.copyScript')}
                   >
                     {copied ? <CheckCircle className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-white" />}
                   </button>
                 </div>
                 <div className="mt-3 p-3 bg-yellow-50 rounded-lg">
                   <p className="text-xs text-yellow-700">
-                    <strong>密钥:</strong> <code className="bg-yellow-100 px-1 rounded">{probeSecret}</code>
+                    <strong>{t('servers.secretKey')}:</strong> <code className="bg-yellow-100 px-1 rounded">{probeSecret}</code>
                     <br />
-                    请妥善保管此密钥，用于验证探针客户端身份。
+                    {t('servers.secretKeyDesc')}
                   </p>
                 </div>
               </div>
@@ -313,8 +315,8 @@ echo "Secret: ${probeSecret}"
 
           <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
             <div>
-              <p className="font-medium text-gray-700">公开显示</p>
-              <p className="text-sm text-gray-500">开启后将在公共页面显示此服务器</p>
+              <p className="font-medium text-gray-700">{t('servers.publicDisplay')}</p>
+              <p className="text-sm text-gray-500">{t('servers.publicDisplayDesc')}</p>
             </div>
             <button
               type="button"
@@ -331,14 +333,14 @@ echo "Secret: ${probeSecret}"
               onClick={onClose}
               className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
             >
-              取消
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
             >
               <Save className="w-4 h-4" />
-              保存
+              {t('common.save')}
             </button>
           </div>
         </form>
