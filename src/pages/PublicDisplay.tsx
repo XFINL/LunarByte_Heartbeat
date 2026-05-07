@@ -1,4 +1,4 @@
-import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe } from 'lucide-react';
+import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe, Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 import ResponseChart from '@/components/ResponseChart';
@@ -42,6 +42,19 @@ export default function PublicDisplay() {
         return { label: '检测中', class: 'status-pending', icon: Loader };
       default:
         return { label: '未知', class: 'bg-gray-400', icon: Server };
+    }
+  };
+
+  const getHeartbeatColor = (status: 'online' | 'offline' | 'pending' | null) => {
+    switch (status) {
+      case 'online':
+        return 'bg-green-500';
+      case 'offline':
+        return 'bg-red-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      default:
+        return 'bg-purple-400';
     }
   };
 
@@ -124,6 +137,9 @@ export default function PublicDisplay() {
               {publicServers.map((server) => {
                 const statusConfig = getStatusConfig(server.status);
                 const StatusIcon = statusConfig.icon;
+                const heartbeatRecords = server.heartbeat;
+                const totalSlots = 12;
+                const emptySlots = totalSlots - heartbeatRecords.length;
 
                 return (
                   <div
@@ -156,6 +172,43 @@ export default function PublicDisplay() {
                           <span className="text-slate-400 text-sm ml-1">ms</span>
                         </div>
                       )}
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Eye className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-400 text-sm">心跳记录</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: emptySlots }).map((_, i) => (
+                          <div
+                            key={`empty-${server.id}-${i}`}
+                            className="w-3 h-3 rounded-full bg-purple-400 opacity-60"
+                            title="服务器未添加"
+                          />
+                        ))}
+                        {heartbeatRecords.map((record, index) => (
+                          <div
+                            key={`heartbeat-${server.id}-${index}`}
+                            className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150`}
+                            title={record.timestamp ? new Date(record.timestamp).toLocaleTimeString('zh-CN') : '未检测'}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-3 mt-2">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-green-500" />
+                          <span className="text-xs text-slate-400">在线</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-red-500" />
+                          <span className="text-xs text-slate-400">离线</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-purple-400" />
+                          <span className="text-xs text-slate-400">未检测</span>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2 text-slate-400 text-sm">

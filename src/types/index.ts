@@ -10,6 +10,12 @@ export interface Server {
   created_at: string;
   updated_at: string;
   is_public: boolean;
+  heartbeat: HeartbeatRecord[];
+}
+
+export interface HeartbeatRecord {
+  timestamp: string;
+  status: 'online' | 'offline' | 'pending' | null;
 }
 
 export interface MonitorLog {
@@ -26,6 +32,7 @@ export interface ServerFormData {
   hostname: string;
   port: number;
   protocol: 'http' | 'https' | 'tcp';
+  isPublic?: boolean;
 }
 
 export interface OverviewStats {

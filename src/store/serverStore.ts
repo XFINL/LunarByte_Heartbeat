@@ -1,5 +1,28 @@
 import { create } from 'zustand';
-import type { Server, ServerFormData, OverviewStats, MonitorLog, PublicDisplaySettings } from '@/types';
+import type { Server, ServerFormData, OverviewStats, MonitorLog, PublicDisplaySettings, HeartbeatRecord } from '@/types';
+
+const generateMockHeartbeat = (status: 'online' | 'offline' | 'pending', hours: number = 1): HeartbeatRecord[] => {
+  const records: HeartbeatRecord[] = [];
+  const now = Date.now();
+  const fiveMinutes = 5 * 60 * 1000;
+  
+  for (let i = 12; i >= 0; i--) {
+    const timestamp = new Date(now - i * fiveMinutes).toISOString();
+    if (i === 0) {
+      records.push({ timestamp, status });
+    } else {
+      const random = Math.random();
+      let recordStatus: 'online' | 'offline' | 'pending' | null = status;
+      if (status === 'online' && random > 0.9) {
+        recordStatus = 'offline';
+      } else if (status === 'offline' && random > 0.7) {
+        recordStatus = 'online';
+      }
+      records.push({ timestamp, status: recordStatus });
+    }
+  }
+  return records;
+};
 
 const mockServers: Server[] = [
   {
@@ -14,6 +37,7 @@ const mockServers: Server[] = [
     created_at: '2024-01-15T10:00:00Z',
     updated_at: new Date().toISOString(),
     is_public: true,
+    heartbeat: generateMockHeartbeat('online'),
   },
   {
     id: 2,
@@ -27,6 +51,7 @@ const mockServers: Server[] = [
     created_at: '2024-01-16T08:30:00Z',
     updated_at: new Date().toISOString(),
     is_public: true,
+    heartbeat: generateMockHeartbeat('online'),
   },
   {
     id: 3,
@@ -40,6 +65,7 @@ const mockServers: Server[] = [
     created_at: '2024-01-17T14:20:00Z',
     updated_at: new Date().toISOString(),
     is_public: false,
+    heartbeat: generateMockHeartbeat('online'),
   },
   {
     id: 4,
@@ -53,6 +79,7 @@ const mockServers: Server[] = [
     created_at: '2024-01-18T09:15:00Z',
     updated_at: new Date().toISOString(),
     is_public: true,
+    heartbeat: generateMockHeartbeat('offline'),
   },
   {
     id: 5,
@@ -66,6 +93,7 @@ const mockServers: Server[] = [
     created_at: '2024-01-19T11:45:00Z',
     updated_at: new Date().toISOString(),
     is_public: true,
+    heartbeat: generateMockHeartbeat('online'),
   },
   {
     id: 6,
@@ -79,6 +107,7 @@ const mockServers: Server[] = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     is_public: false,
+    heartbeat: [],
   },
 ];
 
@@ -122,13 +151,17 @@ export const useServerStore = create<ServerStore>((set, get) => ({
   addServer: (data) => {
     const newServer: Server = {
       id: Date.now(),
-      ...data,
+      name: data.name,
+      hostname: data.hostname,
+      port: data.port,
+      protocol: data.protocol,
       status: 'pending',
       response_time: 0,
       last_check: '',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      is_public: false,
+      is_public: data.isPublic || false,
+      heartbeat: [],
     };
     set((state) => ({ servers: [...state.servers, newServer] }));
   },
@@ -137,7 +170,12 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     set((state) => ({
       servers: state.servers.map((server) =>
         server.id === id
-          ? { ...server, ...data, updated_at: new Date().toISOString() }
+          ? {
+              ...server,
+              ...data,
+              is_public: data.isPublic !== undefined ? data.isPublic : server.is_public,
+              updated_at: new Date().toISOString(),
+            }
           : server
       ),
     }));
@@ -157,6 +195,10 @@ export const useServerStore = create<ServerStore>((set, get) => ({
               response_time,
               last_check: new Date().toISOString(),
               updated_at: new Date().toISOString(),
+              heartbeat: [
+                ...server.heartbeat.slice(-11),
+                { timestamp: new Date().toISOString(), status },
+              ],
             }
           : server
       ),
@@ -196,8 +238,8 @@ export const useServerStore = create<ServerStore>((set, get) => ({
   },
 
   getPublicServers: () => {
-    const { servers, publicSettings } = get();
-    return servers.filter((server) => publicSettings.public_servers.includes(server.id));
+    const { servers } = get();
+    return servers.filter((server) => server.is_public);
   },
 
   updatePublicSettings: (settings) => {

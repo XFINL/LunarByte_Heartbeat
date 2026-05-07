@@ -22,6 +22,7 @@ export default function Modal({ isOpen, onClose, onSave, title, server }: ModalP
     hostname: '',
     port: 80,
     protocol: 'http',
+    isPublic: false,
   });
 
   useEffect(() => {
@@ -31,9 +32,10 @@ export default function Modal({ isOpen, onClose, onSave, title, server }: ModalP
         hostname: server.hostname,
         port: server.port,
         protocol: server.protocol,
+        isPublic: server.isPublic || false,
       });
     } else {
-      setFormData({ name: '', hostname: '', port: 80, protocol: 'http' });
+      setFormData({ name: '', hostname: '', port: 80, protocol: 'http', isPublic: false });
     }
   }, [server, isOpen]);
 
@@ -117,6 +119,19 @@ export default function Modal({ isOpen, onClose, onSave, title, server }: ModalP
                 </select>
               </div>
             </div>
+          </div>
+
+          <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+            <div>
+              <p className="font-medium text-gray-700">公开显示</p>
+              <p className="text-sm text-gray-500">开启后将在公共页面显示此服务器</p>
+            </div>
+            <button
+              onClick={() => setFormData({ ...formData, isPublic: !formData.isPublic })}
+              className={`relative w-14 h-7 rounded-full transition-all ${formData.isPublic ? 'bg-gradient-to-r from-indigo-500 to-purple-500' : 'bg-gray-300'}`}
+            >
+              <span className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-lg transition-all ${formData.isPublic ? 'left-8' : 'left-1'}`} />
+            </button>
           </div>
 
           <div className="flex gap-3 pt-4">

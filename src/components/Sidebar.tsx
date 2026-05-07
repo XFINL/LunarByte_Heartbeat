@@ -1,5 +1,6 @@
-import { LayoutDashboard, Server, Settings, Bell, Shield, Activity, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Server, Settings, Bell, Shield, Activity, Menu, X, Monitor } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { PageType } from '@/types';
 
 interface SidebarProps {
@@ -75,6 +76,14 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
             </nav>
 
             <div className="mt-auto space-y-2">
+              <Link
+                to="/public"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300"
+              >
+                <Monitor className="w-5 h-5" />
+                <span className="font-medium">公共显示</span>
+              </Link>
               <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
                 <Bell className="w-5 h-5" />
                 <span className="font-medium">通知</span>
@@ -137,6 +146,13 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
 
         {isOpen && (
           <div className="mt-auto space-y-2">
+            <Link
+              to="/public"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300"
+            >
+              <Monitor className="w-5 h-5" />
+              <span className="font-medium">公共显示</span>
+            </Link>
             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
               <Bell className="w-5 h-5" />
               <span className="font-medium">通知</span>

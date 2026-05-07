@@ -1,4 +1,4 @@
-import { Server, Clock, Wifi, WifiOff, Loader, MoreVertical } from 'lucide-react';
+import { Server, Clock, Wifi, WifiOff, Loader, MoreVertical, Eye } from 'lucide-react';
 import type { Server as ServerType } from '@/types';
 import { useState } from 'react';
 
@@ -37,6 +37,28 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
       minute: '2-digit',
     });
   };
+
+  const getHeartbeatColor = (status: 'online' | 'offline' | 'pending' | null) => {
+    switch (status) {
+      case 'online':
+        return 'bg-green-500';
+      case 'offline':
+        return 'bg-red-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      default:
+        return 'bg-purple-400';
+    }
+  };
+
+  const getHeartbeatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const heartbeatRecords = server.heartbeat;
+  const totalSlots = 12;
+  const emptySlots = totalSlots - heartbeatRecords.length;
 
   return (
     <div className="glass rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all duration-300 group">
@@ -94,6 +116,43 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
         )}
       </div>
 
+      <div className="mt-3 pt-3 border-t border-gray-200/50">
+        <div className="flex items-center gap-2 mb-2">
+          <Eye className="w-3 h-3 text-gray-400" />
+          <span className="text-xs text-gray-500">心跳记录（近1小时）</span>
+        </div>
+        <div className="flex items-center gap-1">
+          {Array.from({ length: emptySlots }).map((_, i) => (
+            <div
+              key={`empty-${i}`}
+              className="w-3 h-3 rounded-full bg-purple-400 opacity-60"
+              title="服务器未添加"
+            />
+          ))}
+          {heartbeatRecords.map((record, index) => (
+            <div
+              key={index}
+              className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150`}
+              title={getHeartbeatTime(record.timestamp)}
+            />
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-xs text-gray-500">在线</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="text-xs text-gray-500">离线</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="text-xs text-gray-500">未检测</span>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-3 pt-3 border-t border-gray-200/50 flex items-center gap-2 text-xs text-gray-500">
         <Clock className="w-3 h-3 flex-shrink-0" />
         <span className="truncate">最后检测: {formatTime(server.last_check)}</span>
@@ -103,6 +162,12 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
         <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
           {server.protocol.toUpperCase()}
         </span>
+        {server.is_public && (
+          <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-600 flex items-center gap-1">
+            <Eye className="w-3 h-3" />
+            公开
+          </span>
+        )}
       </div>
     </div>
   );
