@@ -2,21 +2,23 @@ import { LayoutDashboard, Server, Settings, Bell, Shield, Activity, Menu, X, Mon
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { PageType } from '@/types';
+import { useLanguageStore } from '@/store/languageStore';
 
 interface SidebarProps {
   currentPage: PageType;
   onPageChange: (page: PageType) => void;
 }
 
-const navItems = [
-  { id: 'dashboard' as PageType, icon: LayoutDashboard, label: '仪表盘' },
-  { id: 'servers' as PageType, icon: Server, label: '服务器' },
-  { id: 'settings' as PageType, icon: Settings, label: '设置' },
-];
-
 export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLanguageStore();
+
+  const navItems = [
+    { id: 'dashboard' as PageType, icon: LayoutDashboard, label: t('nav.dashboard') },
+    { id: 'servers' as PageType, icon: Server, label: t('nav.servers') },
+    { id: 'settings' as PageType, icon: Settings, label: t('nav.settings') },
+  ];
 
   return (
     <>
@@ -40,7 +42,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-gray-800">ServerPulse</h1>
-                  <p className="text-xs text-gray-500">服务器监测面板</p>
+                  <p className="text-xs text-gray-500">{t('common.info')}</p>
                 </div>
               </div>
               <button
@@ -82,18 +84,18 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300"
               >
                 <Monitor className="w-5 h-5" />
-                <span className="font-medium">公共显示</span>
+                <span className="font-medium">{t('nav.publicDisplay')}</span>
               </Link>
               <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
                 <Bell className="w-5 h-5" />
-                <span className="font-medium">通知</span>
+                <span className="font-medium">{t('settings.notifications')}</span>
                 <span className="ml-auto w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
                   3
                 </span>
               </button>
               <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
                 <Shield className="w-5 h-5" />
-                <span className="font-medium">安全</span>
+                <span className="font-medium">{t('settings.security')}</span>
               </button>
             </div>
           </aside>
@@ -151,18 +153,18 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
               className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300"
             >
               <Monitor className="w-5 h-5" />
-              <span className="font-medium">公共显示</span>
+              <span className="font-medium">{t('nav.publicDisplay')}</span>
             </Link>
             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
               <Bell className="w-5 h-5" />
-              <span className="font-medium">通知</span>
+              <span className="font-medium">{t('settings.notifications')}</span>
               <span className="ml-auto w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center">
                 3
               </span>
             </button>
             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-gray-600 hover:bg-white/60 hover:text-gray-800 transition-all duration-300">
               <Shield className="w-5 h-5" />
-              <span className="font-medium">安全</span>
+              <span className="font-medium">{t('settings.security')}</span>
             </button>
           </div>
         )}

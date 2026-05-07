@@ -4,12 +4,14 @@ import Modal from '@/components/Modal';
 import { Plus, Filter, Download } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
+import { useLanguageStore } from '@/store/languageStore';
 import type { Server, ServerFormData } from '@/types';
 
 type FilterType = 'all' | 'online' | 'offline' | 'pending';
 
 export default function Servers() {
   const { servers, addServer, updateServer, deleteServer, getServerLogs } = useServerStore();
+  const { t } = useLanguageStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingServer, setEditingServer] = useState<Server | null>(null);
   const [filter, setFilter] = useState<FilterType>('all');
@@ -34,21 +36,21 @@ export default function Servers() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm('确定要删除这个服务器吗？')) {
+    if (confirm(t('common.confirm') + '?')) {
       deleteServer(id);
     }
   };
 
   const filterOptions: Array<{ value: FilterType; label: string }> = [
-    { value: 'all', label: '全部' },
-    { value: 'online', label: '在线' },
-    { value: 'offline', label: '离线' },
-    { value: 'pending', label: '检测中' },
+    { value: 'all', label: t('servers.all') },
+    { value: 'online', label: t('common.online') },
+    { value: 'offline', label: t('common.offline') },
+    { value: 'pending', label: t('common.pending') },
   ];
 
   return (
     <div className="space-y-6">
-      <Header title="服务器管理" />
+      <Header title={t('nav.servers')} />
 
       <div className="glass rounded-2xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -91,14 +93,14 @@ export default function Servers() {
           <div className="flex items-center gap-3">
             <button className="btn-glass px-4 py-2 rounded-xl flex items-center gap-2 text-gray-600">
               <Download className="w-4 h-4" />
-              导出数据
+              {t('servers.exportData')}
             </button>
             <button
               onClick={() => setIsModalOpen(true)}
               className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
-              添加服务器
+              {t('servers.addServer')}
             </button>
           </div>
         </div>
@@ -117,7 +119,7 @@ export default function Servers() {
 
       {filteredServers.length === 0 && (
         <div className="glass rounded-2xl p-12 text-center">
-          <p className="text-gray-500">没有找到匹配的服务器</p>
+          <p className="text-gray-500">{t('common.noData')}</p>
         </div>
       )}
 
@@ -125,7 +127,7 @@ export default function Servers() {
         isOpen={isModalOpen}
         onClose={() => { setIsModalOpen(false); setEditingServer(null); }}
         onSave={handleSave}
-        title={editingServer ? '编辑服务器' : '添加服务器'}
+        title={editingServer ? t('servers.editServer') : t('servers.addServer')}
         server={editingServer}
       />
     </div>

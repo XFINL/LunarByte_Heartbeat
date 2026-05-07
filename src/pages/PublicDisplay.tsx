@@ -1,12 +1,14 @@
 import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe, MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
+import { useLanguageStore } from '@/store/languageStore';
 import ResponseChart from '@/components/ResponseChart';
 import HeartbeatDot from '@/components/HeartbeatDot';
 import CountryFlag from '@/components/CountryFlag';
 
 export default function PublicDisplay() {
   const { publicSettings, getPublicServers, getServerLogs, getStats, updateServerStatus } = useServerStore();
+  const { t } = useLanguageStore();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -39,13 +41,13 @@ export default function PublicDisplay() {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'online':
-        return { label: '在线', class: 'status-online', icon: Wifi };
+        return { label: t('common.online'), class: 'status-online', icon: Wifi };
       case 'offline':
-        return { label: '离线', class: 'status-offline', icon: WifiOff };
+        return { label: t('common.offline'), class: 'status-offline', icon: WifiOff };
       case 'pending':
-        return { label: '检测中', class: 'status-pending', icon: Loader };
+        return { label: t('common.pending'), class: 'status-pending', icon: Loader };
       default:
-        return { label: '未知', class: 'bg-gray-400', icon: Server };
+        return { label: t('common.unknown'), class: 'bg-gray-400', icon: Server };
     }
   };
 
@@ -60,9 +62,9 @@ export default function PublicDisplay() {
   const formatUptime = (seconds: number) => {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
-    if (days > 0) return `${days}天 ${hours}小时`;
-    if (hours > 0) return `${hours}小时`;
-    return `${Math.floor((seconds % 3600) / 60)}分钟`;
+    if (days > 0) return `${days}${t('public.days')} ${hours}${t('public.hours')}`;
+    if (hours > 0) return `${hours}${t('public.hours')}`;
+    return `${Math.floor((seconds % 3600) / 60)}${t('public.minutes')}`;
   };
 
   const getUsageColor = (usage: number) => {
@@ -71,7 +73,7 @@ export default function PublicDisplay() {
     return 'text-red-400';
   };
 
-  const pageTitle = publicSettings.title || '服务器监控';
+  const pageTitle = publicSettings.title || t('public.pageTitle');
   const footerText = publicSettings.footer || 'Powered by Server Monitor';
   const customCss = publicSettings.custom_css || '';
   const layout = publicSettings.layout || 'grid';
@@ -81,8 +83,8 @@ export default function PublicDisplay() {
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
         <div className="text-center">
           <Globe className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-400">公共显示未启用</h1>
-          <p className="text-gray-500 mt-2">请在后台设置中启用公共显示功能</p>
+          <h1 className="text-2xl font-bold text-gray-400">{t('public.publicDisplayDisabled')}</h1>
+          <p className="text-gray-500 mt-2">{t('public.publicDisplayDisabledDesc')}</p>
         </div>
       </div>
     );
@@ -95,7 +97,7 @@ export default function PublicDisplay() {
         <header className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">{pageTitle}</h1>
           <p className="text-gray-400">
-            更新于 {currentTime.toLocaleString('zh-CN')}
+            {t('public.updateTime')} {currentTime.toLocaleString()}
           </p>
         </header>
 
@@ -104,35 +106,35 @@ export default function PublicDisplay() {
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Server className="w-4 h-4 text-pink-400/80" />
-                <span className="text-gray-400 text-sm">总服务器</span>
+                <span className="text-gray-400 text-sm">{t('dashboard.totalServers')}</span>
               </div>
               <p className="text-2xl font-bold text-white">{stats.total}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Wifi className="w-4 h-4 text-green-400" />
-                <span className="text-gray-400 text-sm">在线</span>
+                <span className="text-gray-400 text-sm">{t('dashboard.online')}</span>
               </div>
               <p className="text-2xl font-bold text-green-400">{stats.online}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <WifiOff className="w-4 h-4 text-red-400" />
-                <span className="text-gray-400 text-sm">离线</span>
+                <span className="text-gray-400 text-sm">{t('dashboard.offline')}</span>
               </div>
               <p className="text-2xl font-bold text-red-400">{stats.offline}</p>
             </div>
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Activity className="w-4 h-4 text-yellow-400" />
-                <span className="text-gray-400 text-sm">平均响应</span>
+                <span className="text-gray-400 text-sm">{t('dashboard.averageResponse')}</span>
               </div>
               <p className="text-2xl font-bold text-yellow-400">{stats.average_response_time}ms</p>
             </div>
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
                 <Globe className="w-4 h-4 text-purple-400" />
-                <span className="text-gray-400 text-sm">在线率</span>
+                <span className="text-gray-400 text-sm">{t('dashboard.uptimeRate')}</span>
               </div>
               <p className="text-2xl font-bold text-purple-400">{stats.uptime_percentage}%</p>
             </div>
@@ -167,7 +169,7 @@ export default function PublicDisplay() {
                             )}
                           </div>
                           {!publicSettings.privacy_protection ? (
-                            <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol === 'probe' ? '探针' : server.protocol})</p>
+                            <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol === 'probe' ? t('public.probe') : server.protocol})</p>
                           ) : (
                             <p className="text-slate-400 text-sm">******:****** (*****)</p>
                           )}
@@ -179,40 +181,40 @@ export default function PublicDisplay() {
                       <div className="mb-4 space-y-3">
                         <div className="grid grid-cols-2 gap-2">
                           <div className="bg-white/5 rounded-lg p-2">
-                            <div className="text-xs text-slate-400 mb-1">CPU</div>
+                            <div className="text-xs text-slate-400 mb-1">{t('public.cpu')}</div>
                             <div className={`text-lg font-bold ${getUsageColor(server.probe_data.cpu_usage)}`}>
                               {server.probe_data.cpu_usage.toFixed(1)}%
                             </div>
-                            <div className="text-xs text-slate-500">{server.probe_data.cpu_cores}核</div>
+                            <div className="text-xs text-slate-500">{server.probe_data.cpu_cores}{t('public.cores')}</div>
                           </div>
                           <div className="bg-white/5 rounded-lg p-2">
-                            <div className="text-xs text-slate-400 mb-1">内存</div>
+                            <div className="text-xs text-slate-400 mb-1">{t('public.memory')}</div>
                             <div className={`text-lg font-bold ${getUsageColor(server.probe_data.memory_usage)}`}>
                               {server.probe_data.memory_usage.toFixed(1)}%
                             </div>
                             <div className="text-xs text-slate-500">{server.probe_data.memory_used}MB / {server.probe_data.memory_total}MB</div>
                           </div>
                           <div className="bg-white/5 rounded-lg p-2">
-                            <div className="text-xs text-slate-400 mb-1">磁盘</div>
+                            <div className="text-xs text-slate-400 mb-1">{t('public.disk')}</div>
                             <div className={`text-lg font-bold ${getUsageColor(server.probe_data.disk_usage)}`}>
                               {server.probe_data.disk_usage.toFixed(1)}%
                             </div>
                             <div className="text-xs text-slate-500">{server.probe_data.disk_used} / {server.probe_data.disk_total}</div>
                           </div>
                           <div className="bg-white/5 rounded-lg p-2">
-                            <div className="text-xs text-slate-400 mb-1">网络</div>
+                            <div className="text-xs text-slate-400 mb-1">{t('public.network')}</div>
                             <div className="text-sm">
                               <span className="text-green-400">↑{formatBytes(server.probe_data.network_tx)}</span>
                               <span className="text-blue-400 ml-2">↓{formatBytes(server.probe_data.network_rx)}</span>
                             </div>
-                            <div className="text-xs text-slate-500">负载: {server.probe_data.load_avg.join('/')}</div>
+                            <div className="text-xs text-slate-500">{t('public.load')}: {server.probe_data.load_avg.join('/')}</div>
                           </div>
                         </div>
                         
                         <div className="bg-white/5 rounded-lg p-2">
                           <div className="flex items-center justify-between text-xs">
-                            <span className="text-slate-400">系统: {server.probe_data.os_name}</span>
-                            <span className="text-slate-400">运行: {formatUptime(server.probe_data.uptime)}</span>
+                            <span className="text-slate-400">{t('public.system')}: {server.probe_data.os_name}</span>
+                            <span className="text-slate-400">{t('public.uptime')}: {formatUptime(server.probe_data.uptime)}</span>
                           </div>
                         </div>
 
@@ -225,7 +227,7 @@ export default function PublicDisplay() {
                               </span>
                             </div>
                             <div className="text-xs text-slate-500 mt-1">
-                              ISP: {server.probe_data.ip_location.isp}
+                              {t('public.isp')}: {server.probe_data.ip_location.isp}
                             </div>
                           </div>
                         )}
@@ -238,7 +240,7 @@ export default function PublicDisplay() {
                               </span>
                             </div>
                             <div className="text-xs text-slate-500 mt-1">
-                              ISP: *****
+                              {t('public.isp')}: *****
                             </div>
                           </div>
                         )}
@@ -264,14 +266,14 @@ export default function PublicDisplay() {
                     <div className="mt-4 pt-4 border-t border-white/10">
                       <div className="flex items-center gap-2 mb-2">
                         <Activity className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-400 text-sm">心跳记录</span>
+                        <span className="text-slate-400 text-sm">{t('public.heartbeatRecord')}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         {Array.from({ length: emptySlots }).map((_, i) => (
                           <div
                             key={`empty-${server.id}-${i}`}
                             className="w-3 h-3 rounded-full bg-purple-400 opacity-60"
-                            title="服务器未添加"
+                            title={t('public.serverNotAdded')}
                           />
                         ))}
                         {heartbeatRecords.map((record, index) => (
@@ -287,7 +289,7 @@ export default function PublicDisplay() {
 
                     <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2 text-slate-400 text-sm">
                       <Clock className="w-4 h-4" />
-                      <span>最后检测: {server.last_check ? new Date(server.last_check).toLocaleTimeString('zh-CN') : '从未检测'}</span>
+                      <span>{t('public.lastCheck')}: {server.last_check ? new Date(server.last_check).toLocaleTimeString() : t('public.neverChecked')}</span>
                     </div>
                   </div>
                 );

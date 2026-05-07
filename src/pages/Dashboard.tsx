@@ -6,10 +6,12 @@ import Modal from '@/components/Modal';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
+import { useLanguageStore } from '@/store/languageStore';
 import type { Server, ServerFormData } from '@/types';
 
 export default function Dashboard() {
   const { servers, getStats, addServer, updateServer, deleteServer, updateServerStatus, getServerLogs } = useServerStore();
+  const { t } = useLanguageStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingServer, setEditingServer] = useState<Server | null>(null);
 
@@ -43,27 +45,27 @@ export default function Dashboard() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm('确定要删除这个服务器吗？')) {
+    if (confirm(t('common.confirm') + '?')) {
       deleteServer(id);
     }
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Header title="仪表盘" onRefresh={handleRefresh} />
+      <Header title={t('nav.dashboard')} onRefresh={handleRefresh} />
       
       <StatsCard stats={stats} />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
         <div className="xl:col-span-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
-            <h3 className="text-base sm:text-lg font-bold text-gray-800">服务器状态</h3>
+            <h3 className="text-base sm:text-lg font-bold text-gray-800">{t('dashboard.serverList')}</h3>
             <button
               onClick={() => setIsModalOpen(true)}
               className="btn-primary px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center"
             >
               <Plus className="w-4 h-4" />
-              添加服务器
+              {t('servers.addServer')}
             </button>
           </div>
           
@@ -89,7 +91,7 @@ export default function Dashboard() {
         isOpen={isModalOpen}
         onClose={() => { setIsModalOpen(false); setEditingServer(null); }}
         onSave={handleSave}
-        title={editingServer ? '编辑服务器' : '添加服务器'}
+        title={editingServer ? t('servers.editServer') : t('servers.addServer')}
         server={editingServer}
       />
     </div>
