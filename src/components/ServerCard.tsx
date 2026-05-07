@@ -39,19 +39,19 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
   };
 
   return (
-    <div className="glass rounded-2xl p-5 hover:shadow-lg transition-all duration-300 group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Server className="w-6 h-6 text-indigo-600" />
+    <div className="glass rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all duration-300 group">
+      <div className="flex items-start justify-between mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+            <Server className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-800">{server.name}</h3>
-            <p className="text-sm text-gray-500">{server.hostname}:{server.port}</p>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-gray-800 text-sm sm:text-base truncate">{server.name}</h3>
+            <p className="text-xs sm:text-sm text-gray-500 truncate">{server.hostname}:{server.port}</p>
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <button
             onClick={() => setShowMenu(!showMenu)}
             className="p-2 rounded-xl hover:bg-white/60 transition-all"
@@ -80,27 +80,27 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-full ${statusConfig.class} flex items-center justify-center`}>
-            <StatusIcon className="w-4 h-4 text-white" />
+          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full ${statusConfig.class} flex items-center justify-center`}>
+            <StatusIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
           </div>
-          <span className="text-sm font-medium text-gray-700">{statusConfig.label}</span>
+          <span className="text-xs sm:text-sm font-medium text-gray-700">{statusConfig.label}</span>
         </div>
 
         {server.status === 'online' && (
           <div className="flex items-center gap-1 text-green-600">
-            <span className="text-lg font-bold">{server.response_time}</span>
-            <span className="text-sm">ms</span>
+            <span className="text-base sm:text-lg font-bold">{server.response_time}</span>
+            <span className="text-xs sm:text-sm">ms</span>
           </div>
         )}
       </div>
 
       <div className="mt-3 pt-3 border-t border-gray-200/50 flex items-center gap-2 text-xs text-gray-500">
-        <Clock className="w-3 h-3" />
-        <span>最后检测: {formatTime(server.last_check)}</span>
+        <Clock className="w-3 h-3 flex-shrink-0" />
+        <span className="truncate">最后检测: {formatTime(server.last_check)}</span>
       </div>
 
       <div className="mt-3 flex items-center gap-2">
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+        <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
           {server.protocol.toUpperCase()}
         </span>
       </div>

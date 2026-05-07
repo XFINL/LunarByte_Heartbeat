@@ -49,25 +49,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Header title="仪表盘" onRefresh={handleRefresh} />
       
       <StatsCard stats={stats} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800">服务器状态</h3>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+        <div className="xl:col-span-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+            <h3 className="text-base sm:text-lg font-bold text-gray-800">服务器状态</h3>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"
+              className="btn-primary px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center"
             >
               <Plus className="w-4 h-4" />
               添加服务器
             </button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {servers.map((server, index) => (
               <div key={server.id} style={{ animationDelay: `${index * 0.1}s` }}>
                 <ServerCard
@@ -80,7 +80,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div>
+        <div className="xl:col-span-1">
           <ResponseChart logs={sampleLogs} />
         </div>
       </div>
