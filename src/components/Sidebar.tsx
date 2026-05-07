@@ -35,8 +35,8 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
           <aside className="absolute left-0 top-0 h-full w-72 glass rounded-none m-0 p-6 animate-slide-in">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400/80 to-rose-300/80 flex items-center justify-center">
+                <Activity className="w-6 h-6 text-white" aria-label="ServerPulse Logo" />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-gray-800">ServerPulse</h1>
@@ -62,7 +62,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                         onClick={() => { onPageChange(item.id); setIsMobileMenuOpen(false); }}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${
                           isActive
-                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30'
+                            ? 'bg-gradient-to-r from-pink-400/80 to-rose-300/80 text-white shadow-lg shadow-pink-200/30'
                             : 'text-gray-600 hover:bg-white/60 hover:text-gray-800'
                         }`}
                       >
@@ -104,7 +104,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
       <aside className="hidden lg:block w-64 h-screen glass rounded-3xl m-4 p-6 flex flex-col fixed left-0 top-0">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400/80 to-rose-300/80 flex items-center justify-center">
               <Activity className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -131,7 +131,7 @@ export default function Sidebar({ currentPage, onPageChange }: SidebarProps) {
                     onClick={() => onPageChange(item.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30'
+                        ? 'bg-gradient-to-r from-pink-400/80 to-rose-300/80 text-white shadow-lg shadow-pink-200/30'
                         : 'text-gray-600 hover:bg-white/60 hover:text-gray-800'
                     }`}
                   >

@@ -106,7 +106,7 @@ export default function Settings() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-pink-400/80 to-rose-300/80 text-white shadow-lg shadow-pink-200/30'
                       : 'text-gray-600 hover:bg-white/60'
                   }`}
                 >
@@ -191,7 +191,7 @@ export default function Settings() {
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, email: !notificationSettings.email })}
                       className={`relative w-14 h-8 rounded-full transition-all ${
-                        notificationSettings.email ? 'bg-indigo-500' : 'bg-gray-300'
+                        notificationSettings.email ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -213,7 +213,7 @@ export default function Settings() {
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, webhook: !notificationSettings.webhook })}
                       className={`relative w-14 h-8 rounded-full transition-all ${
-                        notificationSettings.webhook ? 'bg-indigo-500' : 'bg-gray-300'
+                        notificationSettings.webhook ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -235,7 +235,7 @@ export default function Settings() {
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, sound: !notificationSettings.sound })}
                       className={`relative w-14 h-8 rounded-full transition-all ${
-                        notificationSettings.sound ? 'bg-indigo-500' : 'bg-gray-300'
+                        notificationSettings.sound ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -353,7 +353,7 @@ export default function Settings() {
                   <button
                     onClick={() => updatePublicSettings({ is_enabled: !publicSettings.is_enabled })}
                     className={`relative w-14 h-8 rounded-full transition-all ${
-                      publicSettings.is_enabled ? 'bg-indigo-500' : 'bg-gray-300'
+                      publicSettings.is_enabled ? 'bg-pink-400/70' : 'bg-gray-300/70'
                     }`}
                   >
                     <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -384,7 +384,7 @@ export default function Settings() {
                           href="/public"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-4 py-3 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition-all flex items-center gap-2"
+                          className="px-4 py-3 rounded-xl bg-pink-400/80 text-white hover:bg-pink-500/80 transition-all flex items-center gap-2"
                         >
                           <ExternalLink className="w-4 h-4" />
                           预览
@@ -461,7 +461,7 @@ export default function Settings() {
                         <button
                           onClick={() => updatePublicSettings({ show_stats: !publicSettings.show_stats })}
                           className={`relative w-14 h-8 rounded-full transition-all ${
-                            publicSettings.show_stats ? 'bg-indigo-500' : 'bg-gray-300'
+                            publicSettings.show_stats ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -478,7 +478,7 @@ export default function Settings() {
                         <button
                           onClick={() => updatePublicSettings({ show_chart: !publicSettings.show_chart })}
                           className={`relative w-14 h-8 rounded-full transition-all ${
-                            publicSettings.show_chart ? 'bg-indigo-500' : 'bg-gray-300'
+                            publicSettings.show_chart ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
@@ -514,7 +514,7 @@ export default function Settings() {
                                 updateServer(server.id, { is_public: !server.is_public });
                               }}
                               className={`relative w-14 h-8 rounded-full transition-all ${
-                                server.is_public ? 'bg-indigo-500' : 'bg-gray-300'
+                                server.is_public ? 'bg-pink-400/70' : 'bg-gray-300/70'
                               }`}
                             >
                               <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${

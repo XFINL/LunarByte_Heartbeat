@@ -75,7 +75,7 @@ export default function Servers() {
                   onClick={() => setFilter(option.value)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                     filter === option.value
-                      ? 'bg-indigo-500 text-white'
+                      ? 'bg-pink-400/80 text-white'
                       : 'bg-white/50 text-gray-600 hover:bg-white/80'
                   }`}
                 >

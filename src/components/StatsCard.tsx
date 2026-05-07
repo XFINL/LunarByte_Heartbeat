@@ -2,11 +2,11 @@ import { Server, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 import type { OverviewStats } from '@/types';
 
 const statsConfig = [
-  { key: 'total', label: '总服务器', icon: Server, color: 'from-blue-400 to-cyan-400' },
-  { key: 'online', label: '在线', icon: CheckCircle, color: 'from-green-400 to-emerald-400' },
-  { key: 'offline', label: '离线', icon: XCircle, color: 'from-red-400 to-pink-400' },
-  { key: 'average_response_time', label: '平均响应', icon: Clock, color: 'from-yellow-400 to-orange-400' },
-  { key: 'uptime_percentage', label: '在线率', icon: TrendingUp, color: 'from-purple-400 to-indigo-400' },
+  { key: 'total', label: '总服务器', icon: Server, color: 'from-pink-400/70 to-rose-300/70' },
+  { key: 'online', label: '在线', icon: CheckCircle, color: 'from-green-400/70 to-emerald-300/70' },
+  { key: 'offline', label: '离线', icon: XCircle, color: 'from-red-400/70 to-pink-300/70' },
+  { key: 'average_response_time', label: '平均响应', icon: Clock, color: 'from-yellow-400/70 to-orange-300/70' },
+  { key: 'uptime_percentage', label: '在线率', icon: TrendingUp, color: 'from-pink-400/70 to-rose-300/70' },
 ];
 
 interface StatsCardProps {

@@ -103,7 +103,7 @@ export default function PublicDisplay() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
               <div className="flex items-center gap-2 mb-2">
-                <Server className="w-4 h-4 text-indigo-400" />
+                <Server className="w-4 h-4 text-pink-400/80" />
                 <span className="text-gray-400 text-sm">总服务器</span>
               </div>
               <p className="text-2xl font-bold text-white">{stats.total}</p>
@@ -156,8 +156,8 @@ export default function PublicDisplay() {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-500/30 flex items-center justify-center">
-                          <Server className="w-6 h-6 text-indigo-400" />
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400/30 to-rose-300/30 flex items-center justify-center backdrop-blur-sm">
+                          <Server className="w-6 h-6 text-pink-400/80" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">

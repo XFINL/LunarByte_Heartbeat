@@ -35,7 +35,7 @@ export default function Header({ title, onRefresh }: { title: string; onRefresh?
         )}
 
         <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-gray-200/50 flex-shrink-0">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-pink-400/70 to-rose-300/70 flex items-center justify-center backdrop-blur-sm">
             <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div className="hidden lg:block">

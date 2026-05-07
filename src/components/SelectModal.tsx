@@ -40,7 +40,7 @@ export default function SelectModal({ isOpen, onClose, title, options, selectedV
               }}
               className={`w-full p-4 rounded-xl text-left transition-all flex items-center justify-between ${
                 selectedValue === option.value
-                  ? 'bg-indigo-500 text-white'
+                  ? 'bg-pink-400/80 text-white'
                   : 'bg-white/50 hover:bg-white/80 text-gray-700'
               }`}
             >

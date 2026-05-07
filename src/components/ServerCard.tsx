@@ -48,8 +48,8 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
     <div className="glass rounded-2xl p-4 sm:p-5 hover:shadow-lg transition-all duration-300 group">
       <div className="flex items-start justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-            <Server className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-pink-100/80 to-rose-100/80 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+            <Server className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500/80" />
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-gray-800 text-sm sm:text-base truncate">{server.name}</h3>
@@ -140,7 +140,7 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
           {server.protocol === 'probe' ? '探针' : server.protocol.toUpperCase()}
         </span>
         {server.is_public && (
-          <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-600 flex items-center gap-1">
+          <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-pink-100/70 text-pink-500/80 flex items-center gap-1">
             <Eye className="w-3 h-3" />
             公开
           </span>

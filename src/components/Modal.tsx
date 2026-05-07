@@ -263,7 +263,7 @@ echo "Secret: ${probeSecret}"
                         onClick={() => handleProtocolSelect(p.value, p.defaultPort)}
                         className={`px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-between ${
                           formData.protocol === p.value
-                            ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white'
+                            ? 'bg-gradient-to-r from-pink-400/80 to-rose-300/80 text-white'
                             : 'bg-white/50 text-gray-700 hover:bg-white/80'
                         }`}
                       >
@@ -279,9 +279,9 @@ echo "Secret: ${probeSecret}"
 
           {formData.protocol === 'probe' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100">
+              <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
                 <div className="flex items-center gap-2 mb-3">
-                  <Terminal className="w-5 h-5 text-indigo-600" />
+                  <Terminal className="w-5 h-5 text-pink-500/80" />
                   <span className="font-medium text-gray-800">探针安装脚本</span>
                 </div>
                 <p className="text-sm text-gray-600 mb-3">
@@ -319,7 +319,7 @@ echo "Secret: ${probeSecret}"
             <button
               type="button"
               onClick={() => setFormData({ ...formData, isPublic: !formData.isPublic })}
-              className={`relative w-14 h-7 rounded-full transition-all ${formData.isPublic ? 'bg-gradient-to-r from-indigo-500 to-purple-500' : 'bg-gray-300'}`}
+              className={`relative w-14 h-7 rounded-full transition-all ${formData.isPublic ? 'bg-gradient-to-r from-pink-400/80 to-rose-300/80' : 'bg-gray-300'}`}
             >
               <span className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow-lg transition-all ${formData.isPublic ? 'left-8' : 'left-1'}`} />
             </button>

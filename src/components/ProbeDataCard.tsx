@@ -60,7 +60,7 @@ export default function ProbeDataCard({ data }: ProbeDataCardProps) {
 
         <div className="p-2 rounded-lg bg-white/30">
           <div className="flex items-center gap-2 mb-1">
-            <HardDrive className="w-3 h-3 text-purple-500" />
+            <HardDrive className="w-3 h-3 text-pink-300/80" />
             <span className="text-xs text-gray-500">内存</span>
           </div>
           <div className="flex items-center gap-2">
