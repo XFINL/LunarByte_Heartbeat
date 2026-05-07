@@ -1,7 +1,8 @@
-import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe, Eye } from 'lucide-react';
+import { Server, Wifi, WifiOff, Loader, Clock, Activity, Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 import ResponseChart from '@/components/ResponseChart';
+import HeartbeatDot from '@/components/HeartbeatDot';
 
 export default function PublicDisplay() {
   const { publicSettings, getPublicServers, getServerLogs, getStats, updateServerStatus } = useServerStore();
@@ -42,19 +43,6 @@ export default function PublicDisplay() {
         return { label: '检测中', class: 'status-pending', icon: Loader };
       default:
         return { label: '未知', class: 'bg-gray-400', icon: Server };
-    }
-  };
-
-  const getHeartbeatColor = (status: 'online' | 'offline' | 'pending' | null) => {
-    switch (status) {
-      case 'online':
-        return 'bg-green-500';
-      case 'offline':
-        return 'bg-red-500';
-      case 'pending':
-        return 'bg-yellow-500';
-      default:
-        return 'bg-purple-400';
     }
   };
 
@@ -183,10 +171,11 @@ export default function PublicDisplay() {
                           />
                         ))}
                         {heartbeatRecords.map((record, index) => (
-                          <div
+                          <HeartbeatDot
                             key={`heartbeat-${server.id}-${index}`}
-                            className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150 cursor-pointer`}
-                            title={record.timestamp ? new Date(record.timestamp).toLocaleTimeString('zh-CN') : '未检测'}
+                            record={record}
+                            index={index}
+                            serverId={server.id}
                           />
                         ))}
                       </div>

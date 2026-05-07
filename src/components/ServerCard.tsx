@@ -1,6 +1,8 @@
-import { Server, Clock, Wifi, WifiOff, Loader, MoreVertical, Eye } from 'lucide-react';
+import { Server, Clock, Wifi, WifiOff, Loader, MoreVertical, Eye, Activity } from 'lucide-react';
 import type { Server as ServerType } from '@/types';
 import { useState } from 'react';
+import HeartbeatDot from './HeartbeatDot';
+import ProbeDataCard from './ProbeDataCard';
 
 interface ServerCardProps {
   server: ServerType;
@@ -36,24 +38,6 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  const getHeartbeatColor = (status: 'online' | 'offline' | 'pending' | null) => {
-    switch (status) {
-      case 'online':
-        return 'bg-green-500';
-      case 'offline':
-        return 'bg-red-500';
-      case 'pending':
-        return 'bg-yellow-500';
-      default:
-        return 'bg-purple-400';
-    }
-  };
-
-  const getHeartbeatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   };
 
   const heartbeatRecords = server.heartbeat;
@@ -108,7 +92,7 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
           <span className="text-xs sm:text-sm font-medium text-gray-700">{statusConfig.label}</span>
         </div>
 
-        {server.status === 'online' && (
+        {server.status === 'online' && server.protocol !== 'probe' && (
           <div className="flex items-center gap-1 text-green-600">
             <span className="text-base sm:text-lg font-bold">{server.response_time}</span>
             <span className="text-xs sm:text-sm">ms</span>
@@ -116,9 +100,15 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
         )}
       </div>
 
+      {server.protocol === 'probe' && server.probe_data && (
+        <div className="mt-3 pt-3 border-t border-gray-200/50">
+          <ProbeDataCard data={server.probe_data} />
+        </div>
+      )}
+
       <div className="mt-3 pt-3 border-t border-gray-200/50">
         <div className="flex items-center gap-2 mb-2">
-          <Eye className="w-3 h-3 text-gray-400" />
+          <Activity className="w-3 h-3 text-gray-400" />
           <span className="text-xs text-gray-500">心跳记录（近1小时）</span>
         </div>
         <div className="flex items-center gap-1">
@@ -130,10 +120,11 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
             />
           ))}
           {heartbeatRecords.map((record, index) => (
-            <div
+            <HeartbeatDot
               key={index}
-              className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150 cursor-pointer`}
-              title={getHeartbeatTime(record.timestamp)}
+              record={record}
+              index={index}
+              serverId={server.id}
             />
           ))}
         </div>
@@ -146,7 +137,7 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
 
       <div className="mt-3 flex items-center gap-2">
         <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-          {server.protocol.toUpperCase()}
+          {server.protocol === 'probe' ? '探针' : server.protocol.toUpperCase()}
         </span>
         {server.is_public && (
           <span className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-600 flex items-center gap-1">

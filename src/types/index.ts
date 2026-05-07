@@ -19,7 +19,8 @@ export interface Server {
     | 'postgresql' 
     | 'mongodb' 
     | 'redis' 
-    | 'dns';
+    | 'dns'
+    | 'probe';
   status: 'online' | 'offline' | 'pending';
   response_time: number;
   last_check: string;
@@ -27,6 +28,39 @@ export interface Server {
   updated_at: string;
   is_public: boolean;
   heartbeat: HeartbeatRecord[];
+  probe_data?: ProbeData;
+  probe_secret?: string;
+}
+
+export interface ProbeData {
+  cpu_usage: number;
+  memory_usage: number;
+  memory_total: number;
+  memory_used: number;
+  disk_usage: number;
+  disk_total: number;
+  disk_used: number;
+  network_rx: number;
+  network_tx: number;
+  gpu_usage?: number;
+  gpu_memory?: number;
+  os_name: string;
+  os_arch: string;
+  cpu_cores: number;
+  cpu_model: string;
+  ip_location?: IPLocation;
+  uptime: number;
+  load_avg: [number, number, number];
+}
+
+export interface IPLocation {
+  ip: string;
+  country: string;
+  region: string;
+  city: string;
+  isp: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface HeartbeatRecord {
@@ -63,7 +97,8 @@ export interface ServerFormData {
     | 'postgresql' 
     | 'mongodb' 
     | 'redis' 
-    | 'dns';
+    | 'dns'
+    | 'probe';
   isPublic?: boolean;
 }
 
