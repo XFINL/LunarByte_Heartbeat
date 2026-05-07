@@ -3,6 +3,7 @@ import SelectModal from '@/components/SelectModal';
 import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle, X } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
+import { getTimezones, getLanguages } from '@/locales';
 
 interface NotificationSettings {
   email: boolean;
@@ -48,19 +49,8 @@ export default function Settings() {
     { value: 'dark', label: '深色模式' },
   ];
 
-  const languageOptions = [
-    { value: 'zh-CN', label: '中文' },
-    { value: 'en-US', label: 'English' },
-    { value: 'ja-JP', label: '日本語' },
-  ];
-
-  const timezoneOptions = [
-    { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
-    { value: 'UTC', label: 'UTC' },
-    { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
-    { value: 'Europe/London', label: 'Europe/London (UTC±0)' },
-    { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
-  ];
+  const languageOptions = getLanguages();
+  const timezoneOptions = getTimezones();
 
   const layoutOptions = [
     { value: 'grid', label: '网格布局' },
@@ -558,6 +548,23 @@ export default function Settings() {
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
                             publicSettings.show_chart ? 'left-7' : 'left-1'
+                          }`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                        <div>
+                          <p className="font-medium text-gray-800">隐私保护</p>
+                          <p className="text-sm text-gray-500">开启后在公共页面不展示监测的 IP/Web 地址</p>
+                        </div>
+                        <button
+                          onClick={() => updatePublicSettings({ privacy_protection: !publicSettings.privacy_protection })}
+                          className={`relative w-14 h-8 rounded-full transition-all ${
+                            publicSettings.privacy_protection ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                          }`}
+                        >
+                          <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.privacy_protection ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>

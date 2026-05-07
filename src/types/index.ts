@@ -122,4 +122,5 @@ export interface PublicDisplaySettings {
   footer?: string;
   custom_css?: string;
   layout?: 'grid' | 'list';
+  privacy_protection?: boolean;
 }
