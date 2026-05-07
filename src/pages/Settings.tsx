@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import SelectModal from '@/components/SelectModal';
-import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle } from 'lucide-react';
+import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle, X } from 'lucide-react';
 import { useState } from 'react';
 import { useServerStore } from '@/store/serverStore';
 
@@ -22,6 +22,8 @@ interface GeneralSettings {
 export default function Settings() {
   const { servers, publicSettings, updatePublicSettings, updateServer } = useServerStore();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security' | 'public' | 'notification-config' | 'plugins' | 'theme-manager'>('profile');
+  const [pluginUploadModalOpen, setPluginUploadModalOpen] = useState(false);
+  const [themeUploadModalOpen, setThemeUploadModalOpen] = useState(false);
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     email: true,
     webhook: false,
@@ -777,7 +779,10 @@ export default function Settings() {
                       <span className="font-medium text-gray-800">插件商店</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">从官方插件商店发现并安装更多插件</p>
-                    <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => alert('内测中暂无资格')}
+                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
+                    >
                       <Puzzle className="w-4 h-4" />
                       浏览插件商店
                     </button>
@@ -788,12 +793,14 @@ export default function Settings() {
                       <Globe className="w-5 h-5 text-blue-500/80" />
                       <span className="font-medium text-gray-800">上传插件</span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">上传 .lstp 格式的插件文件进行安装</p>
-                    <label className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <p className="text-sm text-gray-600 mb-4">上传 .plk 格式的插件文件进行安装</p>
+                    <button 
+                      onClick={() => setPluginUploadModalOpen(true)}
+                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
+                    >
                       <Zap className="w-4 h-4" />
                       选择插件文件
-                      <input type="file" accept=".lstp" className="hidden" />
-                    </label>
+                    </button>
                   </div>
                 </div>
 
@@ -839,7 +846,10 @@ export default function Settings() {
                       <span className="font-medium text-gray-800">主题商店</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">从官方主题商店发现并下载更多主题</p>
-                    <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
+                    <button 
+                      onClick={() => alert('内测中暂无资格')}
+                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
+                    >
                       <Palette className="w-4 h-4" />
                       浏览主题商店
                     </button>
@@ -850,58 +860,21 @@ export default function Settings() {
                       <Globe className="w-5 h-5 text-blue-500/80" />
                       <span className="font-medium text-gray-800">上传主题</span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-4">上传 .lstp 格式的主题文件进行安装</p>
-                    <label className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <p className="text-sm text-gray-600 mb-4">上传 .thk 格式的主题文件进行安装</p>
+                    <button 
+                      onClick={() => setThemeUploadModalOpen(true)}
+                      className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
+                    >
                       <Zap className="w-4 h-4" />
                       选择主题文件
-                      <input type="file" accept=".lstp" className="hidden" />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
-                    <div>
-                      <p className="font-medium text-gray-800">圆角风格</p>
-                      <p className="text-sm text-gray-500">使用高圆角设计</p>
-                    </div>
-                    <button
-                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all cursor-pointer"
-                    >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
-                    <div>
-                      <p className="font-medium text-gray-800">玻璃效果</p>
-                      <p className="text-sm text-gray-500">启用毛玻璃背景效果</p>
-                    </div>
-                    <button
-                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all cursor-pointer"
-                    >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
-                    <div>
-                      <p className="font-medium text-gray-800">动画效果</p>
-                      <p className="text-sm text-gray-500">启用页面过渡动画</p>
-                    </div>
-                    <button
-                      className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all cursor-pointer"
-                    >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
                     </button>
                   </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
-                    重置为默认
-                  </button>
                   <button
                     onClick={handleSave}
-                    className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
                     应用主题
@@ -948,6 +921,110 @@ export default function Settings() {
         selectedValue={publicSettings.layout || 'grid'}
         onSelect={(value) => updatePublicSettings({ layout: value as 'grid' | 'list' })}
       />
+
+      {pluginUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="modal-backdrop absolute inset-0" onClick={() => setPluginUploadModalOpen(false)} />
+          <div className="relative glass rounded-3xl p-6 w-full max-w-md animate-slide-in">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-800">上传插件</h3>
+              <button
+                onClick={() => setPluginUploadModalOpen(false)}
+                className="p-2 rounded-xl hover:bg-white/60 transition-all"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="p-6 rounded-xl border-2 border-dashed border-pink-300/50 bg-pink-50/30 text-center">
+                <input
+                  type="file"
+                  id="plugin-file"
+                  accept=".plk"
+                  className="hidden"
+                />
+                <label htmlFor="plugin-file" className="cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400/70 to-rose-300/70 flex items-center justify-center mx-auto mb-3">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="font-medium text-gray-700 mb-1">点击选择插件文件</p>
+                  <p className="text-sm text-gray-500">支持 .plk 格式</p>
+                </label>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setPluginUploadModalOpen(false)}
+                  className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={() => {
+                    alert('插件安装功能开发中');
+                    setPluginUploadModalOpen(false);
+                  }}
+                  className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  安装插件
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {themeUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="modal-backdrop absolute inset-0" onClick={() => setThemeUploadModalOpen(false)} />
+          <div className="relative glass rounded-3xl p-6 w-full max-w-md animate-slide-in">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-800">上传主题</h3>
+              <button
+                onClick={() => setThemeUploadModalOpen(false)}
+                className="p-2 rounded-xl hover:bg-white/60 transition-all"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="p-6 rounded-xl border-2 border-dashed border-blue-300/50 bg-blue-50/30 text-center">
+                <input
+                  type="file"
+                  id="theme-file"
+                  accept=".thk"
+                  className="hidden"
+                />
+                <label htmlFor="theme-file" className="cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/70 to-cyan-300/70 flex items-center justify-center mx-auto mb-3">
+                    <Palette className="w-6 h-6 text-white" />
+                  </div>
+                  <p className="font-medium text-gray-700 mb-1">点击选择主题文件</p>
+                  <p className="text-sm text-gray-500">支持 .thk 格式</p>
+                </label>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setThemeUploadModalOpen(false)}
+                  className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={() => {
+                    alert('主题安装功能开发中');
+                    setThemeUploadModalOpen(false);
+                  }}
+                  className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  安装主题
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
