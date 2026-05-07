@@ -171,6 +171,7 @@ const defaultPublicSettings: PublicDisplaySettings = {
   footer: 'Powered by Server Monitor',
   custom_css: '',
   layout: 'grid',
+  privacy_protection: false,
 };
 
 interface ServerStore {

@@ -166,7 +166,11 @@ export default function PublicDisplay() {
                               <CountryFlag countryCode={server.probe_data.ip_location.country} />
                             )}
                           </div>
-                          <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol === 'probe' ? '探针' : server.protocol})</p>
+                          {publicSettings.privacy_protection ? (
+                            <p className="text-slate-400 text-sm">{'******'}</p>
+                          ) : (
+                            <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol === 'probe' ? '探针' : server.protocol})</p>
+                          )}
                         </div>
                       </div>
                     </div>

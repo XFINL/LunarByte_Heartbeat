@@ -55,11 +55,40 @@ export default function Settings() {
   ];
 
   const timezoneOptions = [
-    { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
-    { value: 'UTC', label: 'UTC' },
+    { value: 'Pacific/Honolulu', label: 'Pacific/Honolulu (UTC-10)' },
+    { value: 'America/Anchorage', label: 'America/Anchorage (UTC-9)' },
+    { value: 'America/Los_Angeles', label: 'America/Los_Angeles (UTC-8)' },
+    { value: 'America/Denver', label: 'America/Denver (UTC-7)' },
+    { value: 'America/Chicago', label: 'America/Chicago (UTC-6)' },
     { value: 'America/New_York', label: 'America/New_York (UTC-5)' },
+    { value: 'America/Sao_Paulo', label: 'America/Sao_Paulo (UTC-3)' },
+    { value: 'Atlantic/Reykjavik', label: 'Atlantic/Reykjavik (UTC±0)' },
     { value: 'Europe/London', label: 'Europe/London (UTC±0)' },
+    { value: 'Europe/Paris', label: 'Europe/Paris (UTC+1)' },
+    { value: 'Europe/Berlin', label: 'Europe/Berlin (UTC+1)' },
+    { value: 'Europe/Madrid', label: 'Europe/Madrid (UTC+1)' },
+    { value: 'Europe/Rome', label: 'Europe/Rome (UTC+1)' },
+    { value: 'Africa/Cairo', label: 'Africa/Cairo (UTC+2)' },
+    { value: 'Europe/Helsinki', label: 'Europe/Helsinki (UTC+2)' },
+    { value: 'Europe/Moscow', label: 'Europe/Moscow (UTC+3)' },
+    { value: 'Asia/Tehran', label: 'Asia/Tehran (UTC+3:30)' },
+    { value: 'Asia/Dubai', label: 'Asia/Dubai (UTC+4)' },
+    { value: 'Asia/Kabul', label: 'Asia/Kabul (UTC+4:30)' },
+    { value: 'Asia/Karachi', label: 'Asia/Karachi (UTC+5)' },
+    { value: 'Asia/Kolkata', label: 'Asia/Kolkata (UTC+5:30)' },
+    { value: 'Asia/Kathmandu', label: 'Asia/Kathmandu (UTC+5:45)' },
+    { value: 'Asia/Dhaka', label: 'Asia/Dhaka (UTC+6)' },
+    { value: 'Asia/Bangkok', label: 'Asia/Bangkok (UTC+7)' },
+    { value: 'Asia/Shanghai', label: 'Asia/Shanghai (UTC+8)' },
+    { value: 'Asia/Hong_Kong', label: 'Asia/Hong_Kong (UTC+8)' },
+    { value: 'Asia/Taipei', label: 'Asia/Taipei (UTC+8)' },
+    { value: 'Asia/Singapore', label: 'Asia/Singapore (UTC+8)' },
     { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
+    { value: 'Asia/Seoul', label: 'Asia/Seoul (UTC+9)' },
+    { value: 'Australia/Adelaide', label: 'Australia/Adelaide (UTC+9:30)' },
+    { value: 'Australia/Sydney', label: 'Australia/Sydney (UTC+10)' },
+    { value: 'Pacific/Auckland', label: 'Pacific/Auckland (UTC+12)' },
+    { value: 'UTC', label: 'UTC (UTC±0)' },
   ];
 
   const layoutOptions = [
@@ -552,12 +581,29 @@ export default function Settings() {
                         </div>
                         <button
                           onClick={() => updatePublicSettings({ show_chart: !publicSettings.show_chart })}
-                          className={`relative w-14 h-8 rounded-full transition-all ${
+                          className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
                             publicSettings.show_chart ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
                             publicSettings.show_chart ? 'left-7' : 'left-1'
+                          }`} />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                        <div>
+                          <p className="font-medium text-gray-800">隐私保护</p>
+                          <p className="text-sm text-gray-500">在公共页面隐藏监测的IP/地址信息</p>
+                        </div>
+                        <button
+                          onClick={() => updatePublicSettings({ privacy_protection: !publicSettings.privacy_protection })}
+                          className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                            publicSettings.privacy_protection ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                          }`}
+                        >
+                          <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                            publicSettings.privacy_protection ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
