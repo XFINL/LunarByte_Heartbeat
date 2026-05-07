@@ -8,6 +8,8 @@ interface NotificationSettings {
   email: boolean;
   webhook: boolean;
   sound: boolean;
+  dingtalk: boolean;
+  wecom: boolean;
 }
 
 interface GeneralSettings {
@@ -24,6 +26,8 @@ export default function Settings() {
     email: true,
     webhook: false,
     sound: true,
+    dingtalk: false,
+    wecom: false,
   });
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>({
     theme: 'light',
@@ -193,7 +197,7 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, email: !notificationSettings.email })}
-                      className={`relative w-14 h-8 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
                         notificationSettings.email ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
@@ -215,7 +219,7 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, webhook: !notificationSettings.webhook })}
-                      className={`relative w-14 h-8 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
                         notificationSettings.webhook ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
@@ -237,12 +241,56 @@ export default function Settings() {
                     </div>
                     <button
                       onClick={() => setNotificationSettings({ ...notificationSettings, sound: !notificationSettings.sound })}
-                      className={`relative w-14 h-8 rounded-full transition-all ${
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
                         notificationSettings.sound ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
                         notificationSettings.sound ? 'left-7' : 'left-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+                        <Globe className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">钉钉通知</p>
+                        <p className="text-sm text-gray-500">通过钉钉机器人发送通知</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setNotificationSettings({ ...notificationSettings, dingtalk: !notificationSettings.dingtalk })}
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                        notificationSettings.dingtalk ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      }`}
+                    >
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        notificationSettings.dingtalk ? 'left-7' : 'left-1'
+                      }`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                        <Globe className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">企业微信通知</p>
+                        <p className="text-sm text-gray-500">通过企业微信机器人发送通知</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setNotificationSettings({ ...notificationSettings, wecom: !notificationSettings.wecom })}
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                        notificationSettings.wecom ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      }`}
+                    >
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        notificationSettings.wecom ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -254,6 +302,28 @@ export default function Settings() {
                     <input
                       type="url"
                       placeholder="https://..."
+                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
+                    />
+                  </div>
+                )}
+
+                {notificationSettings.dingtalk && (
+                  <div className="p-4 rounded-xl bg-white/30">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">钉钉机器人Webhook URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://oapi.dingtalk.com/robot/send?access_token=..."
+                      className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
+                    />
+                  </div>
+                )}
+
+                {notificationSettings.wecom && (
+                  <div className="p-4 rounded-xl bg-white/30">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">企业微信机器人Webhook URL</label>
+                    <input
+                      type="url"
+                      placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
                   </div>
@@ -675,89 +745,56 @@ export default function Settings() {
                 <h3 className="text-lg font-bold text-gray-800">插件管理</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-white/30 hover:bg-white/50 transition-all">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-pink-400/70 to-rose-300/70 border border-pink-200/50">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400/70 to-rose-300/70 flex items-center justify-center">
-                        <Zap className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <Globe className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-gray-800">性能监控插件</h4>
-                        <p className="text-sm text-gray-500">实时监控服务器性能指标</p>
+                        <h4 className="font-medium text-white">WebSocket插件</h4>
+                        <p className="text-sm text-white/80">实时推送服务器状态更新</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-green-500">已启用</span>
-                      <button className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all">
-                        <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-white/30 hover:bg-white/50 transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400/70 to-cyan-300/70 flex items-center justify-center">
-                        <Volume2 className="w-6 h-6 text-white" />
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 rounded-full bg-white/20 text-xs text-white">内置插件</span>
+                        <span className="text-xs text-white/60">无法卸载</span>
                       </div>
-                      <div>
-                        <h4 className="font-medium text-gray-800">声音提醒插件</h4>
-                        <p className="text-sm text-gray-500">服务器状态变化时播放提示音</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-white/80">v1.0.0</span>
+                        <button className="relative w-14 h-8 rounded-full bg-white/30 cursor-not-allowed">
+                          <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7" />
+                        </button>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-green-500">已启用</span>
-                      <button className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all">
-                        <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-white/30 hover:bg-white/50 transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-400/70 to-gray-300/70 flex items-center justify-center">
-                        <Puzzle className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-800">Webhook插件</h4>
-                        <p className="text-sm text-gray-500">向外部服务发送通知</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">已禁用</span>
-                      <button className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all">
-                        <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-white/30 hover:bg-white/50 transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400/70 to-pink-300/70 flex items-center justify-center">
-                        <Sparkles className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-800">高级图表插件</h4>
-                        <p className="text-sm text-gray-500">提供更丰富的数据可视化</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">已禁用</span>
-                      <button className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all">
-                        <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
-                      </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Sparkles className="w-5 h-5 text-pink-500/80" />
-                    <span className="font-medium text-gray-800">插件市场</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Sparkles className="w-5 h-5 text-pink-500/80" />
+                      <span className="font-medium text-gray-800">插件商店</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">从官方插件商店发现并安装更多插件</p>
+                    <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
+                      <Puzzle className="w-4 h-4" />
+                      浏览插件商店
+                    </button>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">发现并安装更多插件来扩展功能</p>
-                  <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
-                    <Puzzle className="w-4 h-4" />
-                    浏览插件市场
-                  </button>
+
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/80 to-cyan-50/80 border border-blue-100/50">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Globe className="w-5 h-5 text-blue-500/80" />
+                      <span className="font-medium text-gray-800">上传插件</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">上传 .lstp 格式的插件文件进行安装</p>
+                    <label className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+                      <Zap className="w-4 h-4" />
+                      选择插件文件
+                      <input type="file" accept=".lstp" className="hidden" />
+                    </label>
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">
@@ -779,76 +816,46 @@ export default function Settings() {
               <div className="space-y-6">
                 <h3 className="text-lg font-bold text-gray-800">主题管理</h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <button className="p-4 rounded-xl bg-gradient-to-br from-pink-400/70 to-rose-300/70 border-2 border-white shadow-lg shadow-pink-200/30 hover:scale-105 transition-all">
-                    <div className="w-full h-16 rounded-xl bg-gradient-to-br from-pink-100/80 to-rose-100/80 mb-3" />
-                    <p className="font-medium text-white text-sm">桃色主题</p>
-                    <div className="mt-2 flex justify-center">
-                      <Check className="w-4 h-4 text-white" />
+                <div className="p-4 rounded-xl bg-gradient-to-r from-pink-400/70 to-rose-300/70 border border-pink-200/50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Palette className="w-8 h-8 text-white" />
                     </div>
-                  </button>
-
-                  <button className="p-4 rounded-xl bg-white/50 border-2 border-transparent hover:border-gray-200 hover:bg-white/80 transition-all">
-                    <div className="w-full h-16 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 mb-3" />
-                    <p className="font-medium text-gray-700 text-sm">蓝色主题</p>
-                  </button>
-
-                  <button className="p-4 rounded-xl bg-white/50 border-2 border-transparent hover:border-gray-200 hover:bg-white/80 transition-all">
-                    <div className="w-full h-16 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 mb-3" />
-                    <p className="font-medium text-gray-700 text-sm">紫色主题</p>
-                  </button>
-
-                  <button className="p-4 rounded-xl bg-white/50 border-2 border-transparent hover:border-gray-200 hover:bg-white/80 transition-all">
-                    <div className="w-full h-16 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 mb-3" />
-                    <p className="font-medium text-gray-700 text-sm">绿色主题</p>
-                  </button>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-white text-lg">月</h4>
+                      <p className="text-sm text-white/80">作者: LunarByte · 版本: 1.0.2</p>
+                      <p className="text-sm text-white/60 mt-1">当前使用主题</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-5 h-5 text-white" />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-white/30">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">主色调</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        defaultValue="#f472b6"
-                        className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                      />
-                      <input
-                        type="text"
-                        defaultValue="#f472b6"
-                        className="flex-1 px-3 py-2 rounded-lg bg-white/50 border-none outline-none text-sm font-mono"
-                      />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-pink-50/80 to-rose-50/80 border border-pink-100/50">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Sparkles className="w-5 h-5 text-pink-500/80" />
+                      <span className="font-medium text-gray-800">主题商店</span>
                     </div>
+                    <p className="text-sm text-gray-600 mb-4">从官方主题商店发现并下载更多主题</p>
+                    <button className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2">
+                      <Palette className="w-4 h-4" />
+                      浏览主题商店
+                    </button>
                   </div>
-                  <div className="p-4 rounded-xl bg-white/30">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">次色调</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        defaultValue="#f4a3b8"
-                        className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                      />
-                      <input
-                        type="text"
-                        defaultValue="#f4a3b8"
-                        className="flex-1 px-3 py-2 rounded-lg bg-white/50 border-none outline-none text-sm font-mono"
-                      />
+
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/80 to-cyan-50/80 border border-blue-100/50">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Globe className="w-5 h-5 text-blue-500/80" />
+                      <span className="font-medium text-gray-800">上传主题</span>
                     </div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-white/30">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">背景色</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        defaultValue="#e0f4ff"
-                        className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                      />
-                      <input
-                        type="text"
-                        defaultValue="#e0f4ff"
-                        className="flex-1 px-3 py-2 rounded-lg bg-white/50 border-none outline-none text-sm font-mono"
-                      />
-                    </div>
+                    <p className="text-sm text-gray-600 mb-4">上传 .lstp 格式的主题文件进行安装</p>
+                    <label className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+                      <Zap className="w-4 h-4" />
+                      选择主题文件
+                      <input type="file" accept=".lstp" className="hidden" />
+                    </label>
                   </div>
                 </div>
 
@@ -859,7 +866,7 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">使用高圆角设计</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all"
+                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all cursor-pointer"
                     >
                       <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
                     </button>
@@ -870,7 +877,7 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">启用毛玻璃背景效果</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all"
+                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all cursor-pointer"
                     >
                       <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
                     </button>
@@ -881,7 +888,7 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">启用页面过渡动画</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all"
+                      className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all cursor-pointer"
                     >
                       <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
                     </button>
