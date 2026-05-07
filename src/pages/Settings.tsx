@@ -17,7 +17,7 @@ interface GeneralSettings {
 }
 
 export default function Settings() {
-  const { servers, publicSettings, updatePublicSettings } = useServerStore();
+  const { servers, publicSettings, updatePublicSettings, updateServer } = useServerStore();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security' | 'public'>('profile');
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     email: true,
@@ -381,6 +381,51 @@ export default function Settings() {
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">秒</span>
                         </div>
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">布局方式</label>
+                        <select
+                          value={publicSettings.layout || 'grid'}
+                          onChange={(e) => updatePublicSettings({ layout: e.target.value as 'grid' | 'list' })}
+                          className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="grid">网格布局</option>
+                          <option value="list">列表布局</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">页面标题</label>
+                        <input
+                          type="text"
+                          value={publicSettings.title || ''}
+                          onChange={(e) => updatePublicSettings({ title: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
+                          placeholder="输入页面标题"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">页脚文本</label>
+                        <input
+                          type="text"
+                          value={publicSettings.footer || ''}
+                          onChange={(e) => updatePublicSettings({ footer: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
+                          placeholder="输入页脚文本"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-white/30">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">自定义 CSS</label>
+                      <textarea
+                        value={publicSettings.custom_css || ''}
+                        onChange={(e) => updatePublicSettings({ custom_css: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all font-mono text-sm"
+                        placeholder="输入自定义 CSS 样式..."
+                        rows={6}
+                      />
                     </div>
 
                     <div className="space-y-3">
@@ -437,17 +482,19 @@ export default function Settings() {
                               </div>
                               <div>
                                 <p className="font-medium text-gray-800">{server.name}</p>
-                                <p className="text-sm text-gray-500">{server.hostname}:{server.port}</p>
+                                <p className="text-sm text-gray-500">{server.hostname}:{server.port} ({server.protocol})</p>
                               </div>
                             </div>
                             <button
-                              onClick={() => toggleServerPublic(server.id)}
+                              onClick={() => {
+                                updateServer(server.id, { is_public: !server.is_public });
+                              }}
                               className={`w-12 h-7 rounded-full transition-all ${
-                                publicSettings.public_servers.includes(server.id) ? 'bg-indigo-500' : 'bg-gray-300'
+                                server.is_public ? 'bg-indigo-500' : 'bg-gray-300'
                               }`}
                             >
                               <span className={`inline-block w-6 h-6 rounded-full bg-white shadow transition-all ${
-                                publicSettings.public_servers.includes(server.id) ? 'translate-x-5' : 'translate-x-0.5'
+                                server.is_public ? 'translate-x-5' : 'translate-x-0.5'
                               }`} />
                             </button>
                           </div>

@@ -132,24 +132,10 @@ export default function ServerCard({ server, onEdit, onDelete }: ServerCardProps
           {heartbeatRecords.map((record, index) => (
             <div
               key={index}
-              className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150`}
+              className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150 cursor-pointer`}
               title={getHeartbeatTime(record.timestamp)}
             />
           ))}
-        </div>
-        <div className="flex items-center gap-2 mt-2">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-xs text-gray-500">在线</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-xs text-gray-500">离线</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-purple-400" />
-            <span className="text-xs text-gray-500">未检测</span>
-          </div>
         </div>
       </div>
 

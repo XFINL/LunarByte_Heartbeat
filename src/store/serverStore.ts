@@ -55,10 +55,10 @@ const mockServers: Server[] = [
   },
   {
     id: 3,
-    name: 'Database Server',
+    name: 'PostgreSQL Database',
     hostname: 'db.example.com',
     port: 5432,
-    protocol: 'tcp',
+    protocol: 'postgresql',
     status: 'online',
     response_time: 23,
     last_check: new Date().toISOString(),
@@ -72,7 +72,7 @@ const mockServers: Server[] = [
     name: 'Redis Cache',
     hostname: 'redis.example.com',
     port: 6379,
-    protocol: 'tcp',
+    protocol: 'redis',
     status: 'offline',
     response_time: 0,
     last_check: new Date(Date.now() - 300000).toISOString(),
@@ -126,6 +126,10 @@ const defaultPublicSettings: PublicDisplaySettings = {
   show_stats: true,
   show_chart: true,
   public_servers: [1, 2, 4, 5],
+  title: '服务器监控',
+  footer: 'Powered by Server Monitor',
+  custom_css: '',
+  layout: 'grid',
 };
 
 interface ServerStore {

@@ -58,82 +58,77 @@ export default function PublicDisplay() {
     }
   };
 
+  const pageTitle = publicSettings.title || '服务器监控';
+  const footerText = publicSettings.footer || 'Powered by Server Monitor';
+  const customCss = publicSettings.custom_css || '';
+  const layout = publicSettings.layout || 'grid';
+
+  if (!publicSettings.is_enabled) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <Globe className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-400">公共显示未启用</h1>
+          <p className="text-gray-500 mt-2">请在后台设置中启用公共显示功能</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
+      {customCss && <style>{customCss}</style>}
       <div className="max-w-7xl mx-auto">
-        <header className="mb-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                <Globe className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">ServerPulse - 公共监控</h1>
-                <p className="text-slate-400 text-sm">实时服务器状态监控面板</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl md:text-4xl font-mono font-bold text-indigo-400">
-                {currentTime.toLocaleTimeString('zh-CN', { hour12: false })}
-              </div>
-              <div className="text-slate-400 text-sm">
-                {currentTime.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
-              </div>
-            </div>
-          </div>
+        <header className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">{pageTitle}</h1>
+          <p className="text-gray-400">
+            更新于 {currentTime.toLocaleString('zh-CN')}
+          </p>
         </header>
 
         {publicSettings.show_stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                  <Server className="w-5 h-5 text-blue-400" />
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Server className="w-4 h-4 text-indigo-400" />
+                <span className="text-gray-400 text-sm">总服务器</span>
               </div>
-              <p className="text-3xl font-bold">{stats.total}</p>
-              <p className="text-slate-400 text-sm">总服务器</p>
+              <p className="text-2xl font-bold text-white">{stats.total}</p>
             </div>
-
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-                  <Wifi className="w-5 h-5 text-green-400" />
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Wifi className="w-4 h-4 text-green-400" />
+                <span className="text-gray-400 text-sm">在线</span>
               </div>
-              <p className="text-3xl font-bold text-green-400">{stats.online}</p>
-              <p className="text-slate-400 text-sm">在线</p>
+              <p className="text-2xl font-bold text-green-400">{stats.online}</p>
             </div>
-
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
-                  <WifiOff className="w-5 h-5 text-red-400" />
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <WifiOff className="w-4 h-4 text-red-400" />
+                <span className="text-gray-400 text-sm">离线</span>
               </div>
-              <p className="text-3xl font-bold text-red-400">{stats.offline}</p>
-              <p className="text-slate-400 text-sm">离线</p>
+              <p className="text-2xl font-bold text-red-400">{stats.offline}</p>
             </div>
-
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center">
-                  <Activity className="w-5 h-5 text-yellow-400" />
-                </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-4 h-4 text-yellow-400" />
+                <span className="text-gray-400 text-sm">平均响应</span>
               </div>
-              <p className="text-3xl font-bold text-yellow-400">{stats.uptime_percentage}%</p>
-              <p className="text-slate-400 text-sm">在线率</p>
+              <p className="text-2xl font-bold text-yellow-400">{stats.average_response_time}ms</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/10">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="w-4 h-4 text-purple-400" />
+                <span className="text-gray-400 text-sm">在线率</span>
+              </div>
+              <p className="text-2xl font-bold text-purple-400">{stats.uptime_percentage}%</p>
             </div>
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Server className="w-6 h-6 text-indigo-400" />
-              服务器状态
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={`grid gap-4 ${layout === 'grid' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               {publicServers.map((server) => {
                 const statusConfig = getStatusConfig(server.status);
                 const StatusIcon = statusConfig.icon;
@@ -153,7 +148,7 @@ export default function PublicDisplay() {
                         </div>
                         <div>
                           <h3 className="font-semibold text-lg">{server.name}</h3>
-                          <p className="text-slate-400 text-sm">{server.hostname}:{server.port}</p>
+                          <p className="text-slate-400 text-sm">{server.hostname}:{server.port} ({server.protocol})</p>
                         </div>
                       </div>
                     </div>
@@ -176,7 +171,7 @@ export default function PublicDisplay() {
 
                     <div className="mt-4 pt-4 border-t border-white/10">
                       <div className="flex items-center gap-2 mb-2">
-                        <Eye className="w-4 h-4 text-slate-400" />
+                        <Activity className="w-4 h-4 text-slate-400" />
                         <span className="text-slate-400 text-sm">心跳记录</span>
                       </div>
                       <div className="flex items-center gap-1">
@@ -190,24 +185,10 @@ export default function PublicDisplay() {
                         {heartbeatRecords.map((record, index) => (
                           <div
                             key={`heartbeat-${server.id}-${index}`}
-                            className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150`}
+                            className={`w-3 h-3 rounded-full ${getHeartbeatColor(record.status)} transition-all hover:scale-150 cursor-pointer`}
                             title={record.timestamp ? new Date(record.timestamp).toLocaleTimeString('zh-CN') : '未检测'}
                           />
                         ))}
-                      </div>
-                      <div className="flex items-center gap-3 mt-2">
-                        <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-green-500" />
-                          <span className="text-xs text-slate-400">在线</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-red-500" />
-                          <span className="text-xs text-slate-400">离线</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 rounded-full bg-purple-400" />
-                          <span className="text-xs text-slate-400">未检测</span>
-                        </div>
                       </div>
                     </div>
 
@@ -222,121 +203,16 @@ export default function PublicDisplay() {
           </div>
 
           {publicSettings.show_chart && publicServers.length > 0 && (
-            <div className="lg:col-span-1">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Activity className="w-6 h-6 text-indigo-400" />
-                响应时间趋势
-              </h2>
-              <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/10">
-                <canvas
-                  ref={(canvas) => {
-                    if (!canvas) return;
-                    const ctx = canvas.getContext('2d');
-                    if (!ctx) return;
-
-                    const dpr = window.devicePixelRatio || 1;
-                    const rect = canvas.getBoundingClientRect();
-                    canvas.width = rect.width * dpr;
-                    canvas.height = rect.height * dpr;
-                    ctx.scale(dpr, dpr);
-
-                    const width = rect.width;
-                    const height = rect.height;
-                    const padding = { top: 20, right: 20, bottom: 30, left: 50 };
-                    const chartWidth = width - padding.left - padding.right;
-                    const chartHeight = height - padding.top - padding.bottom;
-
-                    ctx.clearRect(0, 0, width, height);
-
-                    const values = sampleLogs.map((log) => log.response_time);
-                    const maxValue = Math.max(...values, 100);
-                    const minValue = Math.min(...values, 0);
-                    const range = maxValue - minValue || 1;
-
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                    ctx.lineWidth = 1;
-                    for (let i = 0; i <= 4; i++) {
-                      const y = padding.top + (chartHeight / 4) * i;
-                      ctx.beginPath();
-                      ctx.moveTo(padding.left, y);
-                      ctx.lineTo(width - padding.right, y);
-                      ctx.stroke();
-
-                      const value = maxValue - (range / 4) * i;
-                      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                      ctx.font = '10px sans-serif';
-                      ctx.textAlign = 'right';
-                      ctx.fillText(`${Math.round(value)}ms`, padding.left - 8, y + 3);
-                    }
-
-                    if (sampleLogs.length > 0) {
-                      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
-                      gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
-                      gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
-
-                      ctx.beginPath();
-                      ctx.moveTo(padding.left, height - padding.bottom);
-
-                      sampleLogs.forEach((log, index) => {
-                        const x = padding.left + (chartWidth / (sampleLogs.length - 1)) * index;
-                        const y = padding.top + chartHeight - ((log.response_time - minValue) / range) * chartHeight;
-                        if (index === 0) {
-                          ctx.lineTo(x, y);
-                        } else {
-                          ctx.lineTo(x, y);
-                        }
-                      });
-
-                      ctx.lineTo(padding.left + chartWidth, height - padding.bottom);
-                      ctx.closePath();
-                      ctx.fillStyle = gradient;
-                      ctx.fill();
-
-                      ctx.beginPath();
-                      sampleLogs.forEach((log, index) => {
-                        const x = padding.left + (chartWidth / (sampleLogs.length - 1)) * index;
-                        const y = padding.top + chartHeight - ((log.response_time - minValue) / range) * chartHeight;
-                        if (index === 0) {
-                          ctx.moveTo(x, y);
-                        } else {
-                          ctx.lineTo(x, y);
-                        }
-                      });
-                      ctx.strokeStyle = '#6366f1';
-                      ctx.lineWidth = 2;
-                      ctx.stroke();
-
-                      sampleLogs.forEach((log, index) => {
-                        const x = padding.left + (chartWidth / (sampleLogs.length - 1)) * index;
-                        const y = padding.top + chartHeight - ((log.response_time - minValue) / range) * chartHeight;
-                        ctx.beginPath();
-                        ctx.arc(x, y, 4, 0, Math.PI * 2);
-                        ctx.fillStyle = '#6366f1';
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(x, y, 2, 0, Math.PI * 2);
-                        ctx.fillStyle = '#fff';
-                        ctx.fill();
-                      });
-                    }
-
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                    ctx.font = '10px sans-serif';
-                    ctx.textAlign = 'center';
-                    sampleLogs.forEach((log, index) => {
-                      const x = padding.left + (chartWidth / (sampleLogs.length - 1)) * index;
-                      const time = new Date(log.created_at);
-                      const label = `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
-                      ctx.fillText(label, x, height - 10);
-                    });
-                  }}
-                  className="w-full h-48"
-                  style={{ maxHeight: '200px' }}
-                />
-              </div>
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/10">
+              <h3 className="font-semibold text-white mb-4">响应时间趋势</h3>
+              <ResponseChart logs={sampleLogs} />
             </div>
           )}
         </div>
+
+        <footer className="mt-12 text-center text-gray-500 text-sm">
+          {footerText}
+        </footer>
       </div>
     </div>
   );

@@ -3,7 +3,23 @@ export interface Server {
   name: string;
   hostname: string;
   port: number;
-  protocol: 'http' | 'https' | 'tcp';
+  protocol: 
+    | 'http' 
+    | 'https' 
+    | 'tcp' 
+    | 'udp' 
+    | 'icmp' 
+    | 'ssh' 
+    | 'ftp' 
+    | 'sftp' 
+    | 'smtp' 
+    | 'pop3' 
+    | 'imap' 
+    | 'mysql' 
+    | 'postgresql' 
+    | 'mongodb' 
+    | 'redis' 
+    | 'dns';
   status: 'online' | 'offline' | 'pending';
   response_time: number;
   last_check: string;
@@ -31,7 +47,23 @@ export interface ServerFormData {
   name: string;
   hostname: string;
   port: number;
-  protocol: 'http' | 'https' | 'tcp';
+  protocol: 
+    | 'http' 
+    | 'https' 
+    | 'tcp' 
+    | 'udp' 
+    | 'icmp' 
+    | 'ssh' 
+    | 'ftp' 
+    | 'sftp' 
+    | 'smtp' 
+    | 'pop3' 
+    | 'imap' 
+    | 'mysql' 
+    | 'postgresql' 
+    | 'mongodb' 
+    | 'redis' 
+    | 'dns';
   isPublic?: boolean;
 }
 
@@ -51,4 +83,8 @@ export interface PublicDisplaySettings {
   show_stats: boolean;
   show_chart: boolean;
   public_servers: number[];
+  title?: string;
+  footer?: string;
+  custom_css?: string;
+  layout?: 'grid' | 'list';
 }
