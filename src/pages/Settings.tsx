@@ -76,7 +76,8 @@ export default function Settings() {
   };
 
   const handleCopyUrl = () => {
-    const url = `${window.location.origin}/public`;
+    const baseUrl = publicSettings.base_url || window.location.origin;
+    const url = `${baseUrl}/public`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -426,10 +427,12 @@ export default function Settings() {
                       <div className="flex items-center gap-3">
                         <input
                           type="text"
-                          readOnly
-                          value={`${window.location.origin}/public`}
+                          value={publicSettings.base_url || window.location.origin}
+                          onChange={(e) => updatePublicSettings({ base_url: e.target.value })}
                           className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700"
+                          placeholder={t('settings.inputPublicUrl')}
                         />
+                        <span className="text-gray-500">/public</span>
                         <button
                           onClick={handleCopyUrl}
                           className="px-4 py-3 rounded-xl bg-white/50 hover:bg-white/80 transition-all"
