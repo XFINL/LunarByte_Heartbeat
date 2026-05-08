@@ -172,7 +172,6 @@ const defaultPublicSettings: PublicDisplaySettings = {
   custom_css: '',
   layout: 'grid',
   privacy_protection: false,
-  public_base_url: '',
 };
 
 interface ServerStore {
