@@ -46,6 +46,8 @@ export default function Settings() {
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const [timezoneModalOpen, setTimezoneModalOpen] = useState(false);
   const [layoutModalOpen, setLayoutModalOpen] = useState(false);
+  const [urlModalOpen, setUrlModalOpen] = useState(false);
+  const [urlInputValue, setUrlInputValue] = useState('');
 
   const themeOptions = [
     { value: 'light', label: '浅色模式' },
@@ -424,13 +426,16 @@ export default function Settings() {
                     <div className="p-4 rounded-xl bg-white/30">
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.publicAccessUrl')}</label>
                       <div className="flex items-center gap-3">
-                        <input
-                          type="text"
-                          value={publicSettings.public_url || `${window.location.origin}/public`}
-                          onChange={(e) => updatePublicSettings({ public_url: e.target.value })}
-                          placeholder={`${window.location.origin}/public`}
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 focus:bg-white/80 transition-all"
-                        />
+                        <button
+                          onClick={() => {
+                            setUrlInputValue(publicSettings.public_url || `${window.location.origin}/public`);
+                            setUrlModalOpen(true);
+                          }}
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 hover:bg-white/80 transition-all text-left flex items-center justify-between cursor-pointer"
+                        >
+                          <span className="truncate">{publicSettings.public_url || `${window.location.origin}/public`}</span>
+                          <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0 ml-2" />
+                        </button>
                         <button
                           onClick={handleCopyUrl}
                           className="px-4 py-3 rounded-xl bg-white/50 hover:bg-white/80 transition-all"
@@ -600,6 +605,19 @@ export default function Settings() {
                           </div>
                         ))}
                       </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-4 border-t border-white/20">
+                      <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                        {t('common.cancel')}
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        {t('settings.saveChanges')}
+                      </button>
                     </div>
                   </>
                 )}
@@ -1009,6 +1027,54 @@ export default function Settings() {
                 >
                   <Save className="w-4 h-4" />
                   {t('settings.installTheme')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {urlModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="modal-backdrop absolute inset-0" onClick={() => setUrlModalOpen(false)} />
+          <div className="relative glass rounded-3xl p-6 w-full max-w-md animate-slide-in">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-800">{t('settings.publicAccessUrl')}</h3>
+              <button
+                onClick={() => setUrlModalOpen(false)}
+                className="p-2 rounded-xl hover:bg-white/60 transition-all"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.inputPublicUrl')}</label>
+                <input
+                  type="url"
+                  value={urlInputValue}
+                  onChange={(e) => setUrlInputValue(e.target.value)}
+                  placeholder={window.location.origin}
+                  className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setUrlModalOpen(false)}
+                  className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                >
+                  {t('common.cancel')}
+                </button>
+                <button
+                  onClick={() => {
+                    updatePublicSettings({ public_url: urlInputValue });
+                    setUrlModalOpen(false);
+                  }}
+                  className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {t('settings.saveChanges')}
                 </button>
               </div>
             </div>
