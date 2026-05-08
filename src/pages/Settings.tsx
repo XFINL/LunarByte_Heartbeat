@@ -426,9 +426,10 @@ export default function Settings() {
                       <div className="flex items-center gap-3">
                         <input
                           type="text"
-                          readOnly
-                          value={`${window.location.origin}/public`}
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700"
+                          value={publicSettings.public_url || `${window.location.origin}/public`}
+                          onChange={(e) => updatePublicSettings({ public_url: e.target.value })}
+                          placeholder={`${window.location.origin}/public`}
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 focus:bg-white/80 transition-all"
                         />
                         <button
                           onClick={handleCopyUrl}
@@ -447,6 +448,7 @@ export default function Settings() {
                           {t('settings.preview')}
                         </a>
                       </div>
+                      <p className="text-xs text-gray-500 mt-2">{t('settings.publicUrlDesc')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

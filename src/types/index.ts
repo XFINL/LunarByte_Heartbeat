@@ -123,4 +123,5 @@ export interface PublicDisplaySettings {
   custom_css?: string;
   layout?: 'grid' | 'list';
   privacy_protection?: boolean;
+  public_url?: string;
 }
