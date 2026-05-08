@@ -431,9 +431,9 @@ export default function Settings() {
                             setUrlInputValue(publicSettings.public_url || `${window.location.origin}/public`);
                             setUrlModalOpen(true);
                           }}
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 hover:bg-white/80 transition-all text-left flex items-center justify-between cursor-pointer"
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 hover:bg-white/80 transition-all text-left flex items-center justify-between cursor-pointer overflow-hidden"
                         >
-                          <span className="truncate">{publicSettings.public_url || `${window.location.origin}/public`}</span>
+                          <span className="truncate flex-1">{publicSettings.public_url || `${window.location.origin}/public`}</span>
                           <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0 ml-2" />
                         </button>
                         <button
