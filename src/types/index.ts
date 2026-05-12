@@ -125,3 +125,35 @@ export interface PublicDisplaySettings {
   privacy_protection?: boolean;
   public_url?: string;
 }
+
+export interface ProfileSettings {
+  username: string;
+  email: string;
+}
+
+export interface NotificationSettings {
+  email: boolean;
+  webhook: boolean;
+  sound: boolean;
+  dingtalk: boolean;
+  wecom: boolean;
+  webhook_url?: string;
+  dingtalk_url?: string;
+  wecom_url?: string;
+}
+
+export interface GeneralSettings {
+  theme: 'light' | 'dark';
+  language: string;
+  timezone: string;
+  check_interval: number;
+}
+
+export interface NotificationConfig {
+  offline_delay: number;
+  repeat_interval: number;
+  send_recovery: boolean;
+  send_daily: boolean;
+  send_weekly: boolean;
+  template?: string;
+}

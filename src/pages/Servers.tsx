@@ -41,6 +41,10 @@ export default function Servers() {
     }
   };
 
+  const handleExportData = () => {
+    alert('导出数据功能开发中');
+  };
+
   const filterOptions: Array<{ value: FilterType; label: string }> = [
     { value: 'all', label: t('servers.all') },
     { value: 'online', label: t('common.online') },
@@ -91,10 +95,13 @@ export default function Servers() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="btn-glass px-4 py-2 rounded-xl flex items-center gap-2 text-gray-600">
-              <Download className="w-4 h-4" />
-              {t('servers.exportData')}
-            </button>
+                    <button
+                      onClick={handleExportData}
+                      className="btn-glass px-4 py-2 rounded-xl flex items-center gap-2 text-gray-600 cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      {t('servers.exportData')}
+                    </button>
             <button
               onClick={() => setIsModalOpen(true)}
               className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2"

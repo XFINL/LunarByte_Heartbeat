@@ -1,45 +1,31 @@
 import Header from '@/components/Header';
 import SelectModal from '@/components/SelectModal';
 import { User, Bell, BellOff, Mail, Globe, Shield, Palette, Clock, Save, Eye, EyeOff, Monitor, Copy, ExternalLink, ChevronDown, Sparkles, Volume2, Zap, Check, Puzzle, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useServerStore } from '@/store/serverStore';
 import { useLanguageStore } from '@/store/languageStore';
 import { getTimezones, getLanguages, LocaleKey } from '@/locales';
-
-interface NotificationSettings {
-  email: boolean;
-  webhook: boolean;
-  sound: boolean;
-  dingtalk: boolean;
-  wecom: boolean;
-}
-
-interface GeneralSettings {
-  theme: 'light' | 'dark';
-  language: string;
-  timezone: string;
-  checkInterval: number;
-}
+import type { ProfileSettings, NotificationSettings, GeneralSettings, NotificationConfig, PublicDisplaySettings } from '@/types';
 
 export default function Settings() {
   const { t, locale, setLocale } = useLanguageStore();
-  const { servers, publicSettings, updatePublicSettings, updateServer } = useServerStore();
+  const {
+    servers,
+    publicSettings,
+    updatePublicSettings,
+    updateServer,
+    profileSettings,
+    updateProfileSettings,
+    notificationSettings,
+    updateNotificationSettings,
+    generalSettings: storeGeneralSettings,
+    updateGeneralSettings,
+    notificationConfig,
+    updateNotificationConfig,
+  } = useServerStore();
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'general' | 'security' | 'public' | 'notification-config' | 'plugins' | 'theme-manager'>('profile');
   const [pluginUploadModalOpen, setPluginUploadModalOpen] = useState(false);
   const [themeUploadModalOpen, setThemeUploadModalOpen] = useState(false);
-  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
-    email: true,
-    webhook: false,
-    sound: true,
-    dingtalk: false,
-    wecom: false,
-  });
-  const [generalSettings, setGeneralSettings] = useState<GeneralSettings>({
-    theme: 'light',
-    language: locale,
-    timezone: 'Asia/Shanghai',
-    checkInterval: 60,
-  });
   const [showLanguageToast, setShowLanguageToast] = useState(false);
   const [copied, setCopied] = useState(false);
   const [themeModalOpen, setThemeModalOpen] = useState(false);
@@ -47,7 +33,24 @@ export default function Settings() {
   const [timezoneModalOpen, setTimezoneModalOpen] = useState(false);
   const [layoutModalOpen, setLayoutModalOpen] = useState(false);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
+
+  const [tempProfileSettings, setTempProfileSettings] = useState<ProfileSettings>({ ...profileSettings });
+  const [tempNotificationSettings, setTempNotificationSettings] = useState<NotificationSettings>({ ...notificationSettings });
+  const [tempGeneralSettings, setTempGeneralSettings] = useState<GeneralSettings>({ ...storeGeneralSettings });
+  const [tempPublicSettings, setTempPublicSettings] = useState<PublicDisplaySettings>({ ...publicSettings });
+  const [tempNotificationConfig, setTempNotificationConfig] = useState<NotificationConfig>({ ...notificationConfig });
   const [urlInputValue, setUrlInputValue] = useState('');
+
+  useEffect(() => {
+    setTempProfileSettings({ ...profileSettings });
+    setTempNotificationSettings({ ...notificationSettings });
+    setTempGeneralSettings({ ...storeGeneralSettings });
+    setTempNotificationConfig({ ...notificationConfig });
+  }, [profileSettings, notificationSettings, storeGeneralSettings, notificationConfig]);
+
+  useEffect(() => {
+    setTempPublicSettings({ ...publicSettings });
+  }, [activeTab]);
 
   const themeOptions = [
     { value: 'light', label: '浅色模式' },
@@ -73,8 +76,61 @@ export default function Settings() {
     { id: 'security' as const, label: t('settings.security'), icon: Shield },
   ];
 
-  const handleSave = () => {
+  const handleSaveProfile = () => {
+    updateProfileSettings(tempProfileSettings);
     alert(t('settings.settingsSaved'));
+  };
+
+  const handleSaveNotifications = () => {
+    updateNotificationSettings(tempNotificationSettings);
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSaveGeneral = () => {
+    updateGeneralSettings(tempGeneralSettings);
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSavePublic = () => {
+    updatePublicSettings(tempPublicSettings);
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSaveNotificationConfig = () => {
+    updateNotificationConfig(tempNotificationConfig);
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSaveSecurity = () => {
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSavePlugins = () => {
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleSaveThemeManager = () => {
+    alert(t('settings.settingsSaved'));
+  };
+
+  const handleCancelProfile = () => {
+    setTempProfileSettings({ ...profileSettings });
+  };
+
+  const handleCancelNotifications = () => {
+    setTempNotificationSettings({ ...notificationSettings });
+  };
+
+  const handleCancelGeneral = () => {
+    setTempGeneralSettings({ ...storeGeneralSettings });
+  };
+
+  const handleCancelPublic = () => {
+    setTempPublicSettings({ ...publicSettings });
+  };
+
+  const handleCancelNotificationConfig = () => {
+    setTempNotificationConfig({ ...notificationConfig });
   };
 
   const handleCopyUrl = () => {
@@ -82,6 +138,26 @@ export default function Settings() {
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleEditAvatar = () => {
+    alert('头像编辑功能开发中');
+  };
+
+  const handleRefreshPlugins = () => {
+    alert('插件刷新功能开发中');
+  };
+
+  const handleExportData = () => {
+    alert('导出数据功能开发中');
+  };
+
+  const handleLanguageSelect = (value: string) => {
+    setTempGeneralSettings({ ...tempGeneralSettings, language: value });
+    setLocale(value as LocaleKey);
+    setLanguageModalOpen(false);
+    setShowLanguageToast(true);
+    setTimeout(() => setShowLanguageToast(false), 3000);
   };
 
   return (
@@ -116,19 +192,22 @@ export default function Settings() {
             {activeTab === 'profile' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-bold text-gray-800">{t('settings.profile')}</h3>
-                
+
                 <div className="flex items-center gap-6">
                   <div className="relative">
                     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center">
                       <User className="w-10 h-10 text-white" />
                     </div>
-                    <button className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform">
+                    <button
+                      onClick={handleEditAvatar}
+                      className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
+                    >
                       <Palette className="w-4 h-4 text-indigo-500" />
                     </button>
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-gray-800">{t('settings.profile')}</p>
-                    <p className="text-gray-500">admin@example.com</p>
+                    <p className="text-xl font-bold text-gray-800">{tempProfileSettings.username}</p>
+                    <p className="text-gray-500">{tempProfileSettings.email}</p>
                   </div>
                 </div>
 
@@ -137,7 +216,8 @@ export default function Settings() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.username')}</label>
                     <input
                       type="text"
-                      defaultValue={t('settings.profile')}
+                      value={tempProfileSettings.username}
+                      onChange={(e) => setTempProfileSettings({ ...tempProfileSettings, username: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
                   </div>
@@ -145,18 +225,22 @@ export default function Settings() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.email')}</label>
                     <input
                       type="email"
-                      defaultValue="admin@example.com"
+                      value={tempProfileSettings.email}
+                      onChange={(e) => setTempProfileSettings({ ...tempProfileSettings, email: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                  <button
+                    onClick={handleCancelProfile}
+                    className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                  >
                     {t('common.cancel')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveProfile}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -182,13 +266,13 @@ export default function Settings() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, email: !notificationSettings.email })}
+                      onClick={() => setTempNotificationSettings({ ...tempNotificationSettings, email: !tempNotificationSettings.email })}
                       className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
-                        notificationSettings.email ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                        tempNotificationSettings.email ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.email ? 'left-7' : 'left-1'
+                        tempNotificationSettings.email ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -204,13 +288,13 @@ export default function Settings() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, webhook: !notificationSettings.webhook })}
+                      onClick={() => setTempNotificationSettings({ ...tempNotificationSettings, webhook: !tempNotificationSettings.webhook })}
                       className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
-                        notificationSettings.webhook ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                        tempNotificationSettings.webhook ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.webhook ? 'left-7' : 'left-1'
+                        tempNotificationSettings.webhook ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -218,7 +302,7 @@ export default function Settings() {
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-                        {notificationSettings.sound ? <Bell className="w-5 h-5 text-yellow-600" /> : <BellOff className="w-5 h-5 text-gray-400" />}
+                        {tempNotificationSettings.sound ? <Bell className="w-5 h-5 text-yellow-600" /> : <BellOff className="w-5 h-5 text-gray-400" />}
                       </div>
                       <div>
                         <p className="font-medium text-gray-800">{t('settings.soundReminder')}</p>
@@ -226,13 +310,13 @@ export default function Settings() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, sound: !notificationSettings.sound })}
+                      onClick={() => setTempNotificationSettings({ ...tempNotificationSettings, sound: !tempNotificationSettings.sound })}
                       className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
-                        notificationSettings.sound ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                        tempNotificationSettings.sound ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.sound ? 'left-7' : 'left-1'
+                        tempNotificationSettings.sound ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -248,13 +332,13 @@ export default function Settings() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, dingtalk: !notificationSettings.dingtalk })}
+                      onClick={() => setTempNotificationSettings({ ...tempNotificationSettings, dingtalk: !tempNotificationSettings.dingtalk })}
                       className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
-                        notificationSettings.dingtalk ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                        tempNotificationSettings.dingtalk ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.dingtalk ? 'left-7' : 'left-1'
+                        tempNotificationSettings.dingtalk ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
@@ -270,45 +354,51 @@ export default function Settings() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setNotificationSettings({ ...notificationSettings, wecom: !notificationSettings.wecom })}
+                      onClick={() => setTempNotificationSettings({ ...tempNotificationSettings, wecom: !tempNotificationSettings.wecom })}
                       className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
-                        notificationSettings.wecom ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                        tempNotificationSettings.wecom ? 'bg-pink-400/70' : 'bg-gray-300/70'
                       }`}
                     >
                       <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                        notificationSettings.wecom ? 'left-7' : 'left-1'
+                        tempNotificationSettings.wecom ? 'left-7' : 'left-1'
                       }`} />
                     </button>
                   </div>
                 </div>
 
-                {notificationSettings.webhook && (
+                {tempNotificationSettings.webhook && (
                   <div className="p-4 rounded-xl bg-white/30">
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.webhookUrl')}</label>
                     <input
                       type="url"
-                      placeholder="https://..."
+                      value={tempNotificationSettings.webhook_url}
+                      onChange={(e) => setTempNotificationSettings({ ...tempNotificationSettings, webhook_url: e.target.value })}
+                      placeholder="https://"
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
                   </div>
                 )}
 
-                {notificationSettings.dingtalk && (
+                {tempNotificationSettings.dingtalk && (
                   <div className="p-4 rounded-xl bg-white/30">
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.dingtalkWebhookUrl')}</label>
                     <input
                       type="url"
+                      value={tempNotificationSettings.dingtalk_url}
+                      onChange={(e) => setTempNotificationSettings({ ...tempNotificationSettings, dingtalk_url: e.target.value })}
                       placeholder="https://oapi.dingtalk.com/robot/send?access_token=..."
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
                   </div>
                 )}
 
-                {notificationSettings.wecom && (
+                {tempNotificationSettings.wecom && (
                   <div className="p-4 rounded-xl bg-white/30">
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.wecomWebhookUrl')}</label>
                     <input
                       type="url"
+                      value={tempNotificationSettings.wecom_url}
+                      onChange={(e) => setTempNotificationSettings({ ...tempNotificationSettings, wecom_url: e.target.value })}
                       placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                     />
@@ -316,11 +406,14 @@ export default function Settings() {
                 )}
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                  <button
+                    onClick={handleCancelNotifications}
+                    className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                  >
                     {t('common.cancel')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveNotifications}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -341,7 +434,7 @@ export default function Settings() {
                       onClick={() => setThemeModalOpen(true)}
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <span>{themeOptions.find(o => o.value === generalSettings.theme)?.label || generalSettings.theme}</span>
+                      <span>{themeOptions.find(o => o.value === tempGeneralSettings.theme)?.label || tempGeneralSettings.theme}</span>
                       <ChevronDown className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
@@ -351,7 +444,7 @@ export default function Settings() {
                       onClick={() => setLanguageModalOpen(true)}
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <span>{languageOptions.find(o => o.value === generalSettings.language)?.label || generalSettings.language}</span>
+                      <span>{languageOptions.find(o => o.value === tempGeneralSettings.language)?.label || tempGeneralSettings.language}</span>
                       <ChevronDown className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
@@ -361,7 +454,7 @@ export default function Settings() {
                       onClick={() => setTimezoneModalOpen(true)}
                       className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                     >
-                      <span>{timezoneOptions.find(o => o.value === generalSettings.timezone)?.label || generalSettings.timezone}</span>
+                      <span>{timezoneOptions.find(o => o.value === tempGeneralSettings.timezone)?.label || tempGeneralSettings.timezone}</span>
                       <ChevronDown className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
@@ -370,8 +463,8 @@ export default function Settings() {
                     <div className="relative">
                       <input
                         type="number"
-                        value={generalSettings.checkInterval}
-                        onChange={(e) => setGeneralSettings({ ...generalSettings, checkInterval: parseInt(e.target.value) || 60 })}
+                        value={tempGeneralSettings.check_interval}
+                        onChange={(e) => setTempGeneralSettings({ ...tempGeneralSettings, check_interval: parseInt(e.target.value) || 60 })}
                         className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
                         min="1"
                       />
@@ -381,11 +474,14 @@ export default function Settings() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                  <button
+                    onClick={handleCancelGeneral}
+                    className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                  >
                     {t('common.cancel')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveGeneral}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -410,30 +506,30 @@ export default function Settings() {
                     </div>
                   </div>
                   <button
-                    onClick={() => updatePublicSettings({ is_enabled: !publicSettings.is_enabled })}
+                    onClick={() => setTempPublicSettings({ ...tempPublicSettings, is_enabled: !tempPublicSettings.is_enabled })}
                     className={`relative w-14 h-8 rounded-full transition-all ${
-                      publicSettings.is_enabled ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      tempPublicSettings.is_enabled ? 'bg-pink-400/70' : 'bg-gray-300/70'
                     }`}
                   >
                     <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                      publicSettings.is_enabled ? 'left-7' : 'left-1'
+                      tempPublicSettings.is_enabled ? 'left-7' : 'left-1'
                     }`} />
                   </button>
                 </div>
 
-                {publicSettings.is_enabled && (
+                {tempPublicSettings.is_enabled && (
                   <>
                     <div className="p-4 rounded-xl bg-white/30">
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.publicAccessUrl')}</label>
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => {
-                            setUrlInputValue(publicSettings.public_url || `${window.location.origin}/public`);
+                            setUrlInputValue(tempPublicSettings.public_url || `${window.location.origin}/public`);
                             setUrlModalOpen(true);
                           }}
                           className="flex-1 px-4 py-3 rounded-xl bg-white/50 border-none outline-none text-gray-700 hover:bg-white/80 transition-all text-left flex items-center justify-between cursor-pointer overflow-hidden"
                         >
-                          <span className="truncate flex-1">{publicSettings.public_url || `${window.location.origin}/public`}</span>
+                          <span className="truncate flex-1">{tempPublicSettings.public_url || `${window.location.origin}/public`}</span>
                           <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0 ml-2" />
                         </button>
                         <button
@@ -462,8 +558,8 @@ export default function Settings() {
                         <div className="relative">
                           <input
                             type="number"
-                            value={publicSettings.refresh_interval}
-                            onChange={(e) => updatePublicSettings({ refresh_interval: parseInt(e.target.value) || 30 })}
+                            value={tempPublicSettings.refresh_interval}
+                            onChange={(e) => setTempPublicSettings({ ...tempPublicSettings, refresh_interval: parseInt(e.target.value) || 30 })}
                             className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
                             min="5"
                           />
@@ -476,7 +572,7 @@ export default function Settings() {
                           onClick={() => setLayoutModalOpen(true)}
                           className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all flex items-center justify-between cursor-pointer"
                         >
-                          <span>{layoutOptions.find(o => o.value === (publicSettings.layout || 'grid'))?.label || (publicSettings.layout || 'grid')}</span>
+                          <span>{layoutOptions.find(o => o.value === (tempPublicSettings.layout || 'grid'))?.label || (tempPublicSettings.layout || 'grid')}</span>
                           <ChevronDown className="w-5 h-5 text-gray-500" />
                         </button>
                       </div>
@@ -487,8 +583,8 @@ export default function Settings() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.pageTitle')}</label>
                         <input
                           type="text"
-                          value={publicSettings.title || ''}
-                          onChange={(e) => updatePublicSettings({ title: e.target.value })}
+                          value={tempPublicSettings.title || ''}
+                          onChange={(e) => setTempPublicSettings({ ...tempPublicSettings, title: e.target.value })}
                           className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                           placeholder={t('settings.inputPageTitle')}
                         />
@@ -497,8 +593,8 @@ export default function Settings() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.footerText')}</label>
                         <input
                           type="text"
-                          value={publicSettings.footer || ''}
-                          onChange={(e) => updatePublicSettings({ footer: e.target.value })}
+                          value={tempPublicSettings.footer || ''}
+                          onChange={(e) => setTempPublicSettings({ ...tempPublicSettings, footer: e.target.value })}
                           className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all"
                           placeholder={t('settings.inputFooterText')}
                         />
@@ -508,8 +604,8 @@ export default function Settings() {
                     <div className="p-4 rounded-xl bg-white/30">
                       <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.customCss')}</label>
                       <textarea
-                        value={publicSettings.custom_css || ''}
-                        onChange={(e) => updatePublicSettings({ custom_css: e.target.value })}
+                        value={tempPublicSettings.custom_css || ''}
+                        onChange={(e) => setTempPublicSettings({ ...tempPublicSettings, custom_css: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all font-mono text-sm"
                         placeholder={t('settings.inputCustomCss')}
                         rows={6}
@@ -523,13 +619,13 @@ export default function Settings() {
                           <p className="text-sm text-gray-500">{t('settings.showStatsDesc')}</p>
                         </div>
                         <button
-                          onClick={() => updatePublicSettings({ show_stats: !publicSettings.show_stats })}
+                          onClick={() => setTempPublicSettings({ ...tempPublicSettings, show_stats: !tempPublicSettings.show_stats })}
                           className={`relative w-14 h-8 rounded-full transition-all ${
-                            publicSettings.show_stats ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                            tempPublicSettings.show_stats ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                            publicSettings.show_stats ? 'left-7' : 'left-1'
+                            tempPublicSettings.show_stats ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
@@ -540,13 +636,13 @@ export default function Settings() {
                           <p className="text-sm text-gray-500">{t('settings.showChartDesc')}</p>
                         </div>
                         <button
-                          onClick={() => updatePublicSettings({ show_chart: !publicSettings.show_chart })}
+                          onClick={() => setTempPublicSettings({ ...tempPublicSettings, show_chart: !tempPublicSettings.show_chart })}
                           className={`relative w-14 h-8 rounded-full transition-all ${
-                            publicSettings.show_chart ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                            tempPublicSettings.show_chart ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                            publicSettings.show_chart ? 'left-7' : 'left-1'
+                            tempPublicSettings.show_chart ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
@@ -557,13 +653,13 @@ export default function Settings() {
                           <p className="text-sm text-gray-500">{t('settings.privacyProtectionDesc')}</p>
                         </div>
                         <button
-                          onClick={() => updatePublicSettings({ privacy_protection: !publicSettings.privacy_protection })}
+                          onClick={() => setTempPublicSettings({ ...tempPublicSettings, privacy_protection: !tempPublicSettings.privacy_protection })}
                           className={`relative w-14 h-8 rounded-full transition-all ${
-                            publicSettings.privacy_protection ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                            tempPublicSettings.privacy_protection ? 'bg-pink-400/70' : 'bg-gray-300/70'
                           }`}
                         >
                           <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
-                            publicSettings.privacy_protection ? 'left-7' : 'left-1'
+                            tempPublicSettings.privacy_protection ? 'left-7' : 'left-1'
                           }`} />
                         </button>
                       </div>
@@ -608,11 +704,14 @@ export default function Settings() {
                     </div>
 
                     <div className="flex gap-3 pt-4 border-t border-white/20">
-                      <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                      <button
+                        onClick={handleCancelPublic}
+                        className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                      >
                         {t('common.cancel')}
                       </button>
                       <button
-                        onClick={handleSave}
+                        onClick={handleSavePublic}
                         className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                       >
                         <Save className="w-4 h-4" />
@@ -660,7 +759,7 @@ export default function Settings() {
                     {t('common.cancel')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveSecurity}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -680,7 +779,8 @@ export default function Settings() {
                     <div className="relative">
                       <input
                         type="number"
-                        defaultValue="5"
+                        value={tempNotificationConfig.offline_delay}
+                        onChange={(e) => setTempNotificationConfig({ ...tempNotificationConfig, offline_delay: parseInt(e.target.value) || 5 })}
                         className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
                         min="1"
                       />
@@ -692,7 +792,8 @@ export default function Settings() {
                     <div className="relative">
                       <input
                         type="number"
-                        defaultValue="30"
+                        value={tempNotificationConfig.repeat_interval}
+                        onChange={(e) => setTempNotificationConfig({ ...tempNotificationConfig, repeat_interval: parseInt(e.target.value) || 30 })}
                         className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all pr-20"
                         min="1"
                       />
@@ -708,9 +809,14 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">{t('settings.sendRecoveryNotificationDesc')}</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-pink-400/70 transition-all"
+                      onClick={() => setTempNotificationConfig({ ...tempNotificationConfig, send_recovery: !tempNotificationConfig.send_recovery })}
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                        tempNotificationConfig.send_recovery ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      }`}
                     >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-7 transition-all" />
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        tempNotificationConfig.send_recovery ? 'left-7' : 'left-1'
+                      }`} />
                     </button>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
@@ -719,9 +825,14 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">{t('settings.sendDailySummaryDesc')}</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all"
+                      onClick={() => setTempNotificationConfig({ ...tempNotificationConfig, send_daily: !tempNotificationConfig.send_daily })}
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                        tempNotificationConfig.send_daily ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      }`}
                     >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        tempNotificationConfig.send_daily ? 'left-7' : 'left-1'
+                      }`} />
                     </button>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-white/30">
@@ -730,9 +841,14 @@ export default function Settings() {
                       <p className="text-sm text-gray-500">{t('settings.sendWeeklyReportDesc')}</p>
                     </div>
                     <button
-                      className="relative w-14 h-8 rounded-full bg-gray-300/70 transition-all"
+                      onClick={() => setTempNotificationConfig({ ...tempNotificationConfig, send_weekly: !tempNotificationConfig.send_weekly })}
+                      className={`relative w-14 h-8 rounded-full transition-all cursor-pointer ${
+                        tempNotificationConfig.send_weekly ? 'bg-pink-400/70' : 'bg-gray-300/70'
+                      }`}
                     >
-                      <span className="absolute top-1 w-6 h-6 rounded-full bg-white shadow left-1 transition-all" />
+                      <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${
+                        tempNotificationConfig.send_weekly ? 'left-7' : 'left-1'
+                      }`} />
                     </button>
                   </div>
                 </div>
@@ -740,6 +856,8 @@ export default function Settings() {
                 <div className="p-4 rounded-xl bg-white/30">
                   <label className="block text-sm font-medium text-gray-700 mb-2">{t('settings.notificationTemplate')}</label>
                   <textarea
+                    value={tempNotificationConfig.template || ''}
+                    onChange={(e) => setTempNotificationConfig({ ...tempNotificationConfig, template: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-white/50 border-none outline-none focus:bg-white/80 transition-all font-mono text-sm"
                     placeholder={t('settings.notificationTemplatePlaceholder')}
                     rows={4}
@@ -747,11 +865,14 @@ export default function Settings() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                  <button
+                    onClick={handleCancelNotificationConfig}
+                    className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                  >
                     {t('common.cancel')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveNotificationConfig}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -798,7 +919,7 @@ export default function Settings() {
                       <span className="font-medium text-gray-800">{t('settings.pluginStore')}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">{t('settings.pluginStoreDesc')}</p>
-                    <button 
+                    <button
                       onClick={() => alert(t('settings.betaTesting'))}
                       className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
                     >
@@ -813,7 +934,7 @@ export default function Settings() {
                       <span className="font-medium text-gray-800">{t('settings.uploadPlugin')}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">{t('settings.uploadPluginDesc')}</p>
-                    <button 
+                    <button
                       onClick={() => setPluginUploadModalOpen(true)}
                       className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
                     >
@@ -824,11 +945,14 @@ export default function Settings() {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <button className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all">
+                  <button
+                    onClick={handleRefreshPlugins}
+                    className="flex-1 py-3 rounded-xl bg-white/50 text-gray-600 font-medium hover:bg-white/80 transition-all"
+                  >
                     {t('settings.refreshPlugins')}
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={handleSavePlugins}
                     className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -864,7 +988,7 @@ export default function Settings() {
                     <span className="font-medium text-gray-800">{t('settings.uploadTheme')}</span>
                   </div>
                   <p className="text-sm text-gray-600 mb-4">{t('settings.uploadThemeDesc')}</p>
-                  <button 
+                  <button
                     onClick={() => setThemeUploadModalOpen(true)}
                     className="w-full py-3 rounded-xl bg-white/80 text-gray-700 font-medium hover:bg-white transition-all flex items-center justify-center gap-2"
                   >
@@ -875,7 +999,7 @@ export default function Settings() {
 
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={handleSave}
+                    onClick={handleSaveThemeManager}
                     className="w-full py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
@@ -893,8 +1017,8 @@ export default function Settings() {
         onClose={() => setThemeModalOpen(false)}
         title={t('settings.selectTheme')}
         options={themeOptions}
-        selectedValue={generalSettings.theme}
-        onSelect={(value) => setGeneralSettings({ ...generalSettings, theme: value as 'light' | 'dark' })}
+        selectedValue={tempGeneralSettings.theme}
+        onSelect={(value) => setTempGeneralSettings({ ...tempGeneralSettings, theme: value as 'light' | 'dark' })}
       />
 
       <SelectModal
@@ -902,14 +1026,8 @@ export default function Settings() {
         onClose={() => setLanguageModalOpen(false)}
         title={t('settings.selectLanguage')}
         options={languageOptions}
-        selectedValue={generalSettings.language}
-        onSelect={(value) => {
-          setGeneralSettings({ ...generalSettings, language: value });
-          setLocale(value as LocaleKey);
-          setLanguageModalOpen(false);
-          setShowLanguageToast(true);
-          setTimeout(() => setShowLanguageToast(false), 3000);
-        }}
+        selectedValue={tempGeneralSettings.language}
+        onSelect={handleLanguageSelect}
       />
 
       <SelectModal
@@ -917,8 +1035,8 @@ export default function Settings() {
         onClose={() => setTimezoneModalOpen(false)}
         title={t('settings.selectTimezone')}
         options={timezoneOptions}
-        selectedValue={generalSettings.timezone}
-        onSelect={(value) => setGeneralSettings({ ...generalSettings, timezone: value })}
+        selectedValue={tempGeneralSettings.timezone}
+        onSelect={(value) => setTempGeneralSettings({ ...tempGeneralSettings, timezone: value })}
       />
 
       <SelectModal
@@ -926,8 +1044,8 @@ export default function Settings() {
         onClose={() => setLayoutModalOpen(false)}
         title={t('settings.selectLayout')}
         options={layoutOptions}
-        selectedValue={publicSettings.layout || 'grid'}
-        onSelect={(value) => updatePublicSettings({ layout: value as 'grid' | 'list' })}
+        selectedValue={tempPublicSettings.layout || 'grid'}
+        onSelect={(value) => setTempPublicSettings({ ...tempPublicSettings, layout: value as 'grid' | 'list' })}
       />
 
       {pluginUploadModalOpen && (
@@ -1068,7 +1186,7 @@ export default function Settings() {
                 </button>
                 <button
                   onClick={() => {
-                    updatePublicSettings({ public_url: urlInputValue });
+                    setTempPublicSettings({ ...tempPublicSettings, public_url: urlInputValue });
                     setUrlModalOpen(false);
                   }}
                   className="flex-1 py-3 rounded-xl btn-primary font-medium flex items-center justify-center gap-2"

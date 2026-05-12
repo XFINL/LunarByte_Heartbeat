@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Server, ServerFormData, OverviewStats, MonitorLog, PublicDisplaySettings, HeartbeatRecord } from '@/types';
+import type { Server, ServerFormData, OverviewStats, MonitorLog, PublicDisplaySettings, HeartbeatRecord, ProfileSettings, NotificationSettings, GeneralSettings, NotificationConfig } from '@/types';
 
 const generateMockHeartbeat = (status: 'online' | 'offline' | 'pending', hours: number = 1): HeartbeatRecord[] => {
   const records: HeartbeatRecord[] = [];
@@ -175,10 +175,46 @@ const defaultPublicSettings: PublicDisplaySettings = {
   public_url: '',
 };
 
+const defaultProfileSettings: ProfileSettings = {
+  username: '管理员',
+  email: 'admin@example.com',
+};
+
+const defaultNotificationSettings: NotificationSettings = {
+  email: true,
+  webhook: false,
+  sound: true,
+  dingtalk: false,
+  wecom: false,
+  webhook_url: '',
+  dingtalk_url: '',
+  wecom_url: '',
+};
+
+const defaultGeneralSettings: GeneralSettings = {
+  theme: 'light',
+  language: 'zh-CN',
+  timezone: 'Asia/Shanghai',
+  check_interval: 60,
+};
+
+const defaultNotificationConfig: NotificationConfig = {
+  offline_delay: 5,
+  repeat_interval: 30,
+  send_recovery: true,
+  send_daily: false,
+  send_weekly: false,
+  template: '',
+};
+
 interface ServerStore {
   servers: Server[];
   logs: MonitorLog[];
   publicSettings: PublicDisplaySettings;
+  profileSettings: ProfileSettings;
+  notificationSettings: NotificationSettings;
+  generalSettings: GeneralSettings;
+  notificationConfig: NotificationConfig;
   addServer: (data: ServerFormData) => void;
   updateServer: (id: number, data: Partial<ServerFormData & { is_public?: boolean }>) => void;
   deleteServer: (id: number) => void;
@@ -188,12 +224,20 @@ interface ServerStore {
   getServerLogs: (serverId: number) => MonitorLog[];
   getPublicServers: () => Server[];
   updatePublicSettings: (settings: Partial<PublicDisplaySettings>) => void;
+  updateProfileSettings: (settings: Partial<ProfileSettings>) => void;
+  updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
+  updateGeneralSettings: (settings: Partial<GeneralSettings>) => void;
+  updateNotificationConfig: (settings: Partial<NotificationConfig>) => void;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
   servers: mockServers,
   logs: mockLogs,
   publicSettings: defaultPublicSettings,
+  profileSettings: defaultProfileSettings,
+  notificationSettings: defaultNotificationSettings,
+  generalSettings: defaultGeneralSettings,
+  notificationConfig: defaultNotificationConfig,
 
   addServer: (data) => {
     const newServer: Server = {
@@ -291,5 +335,21 @@ export const useServerStore = create<ServerStore>((set, get) => ({
 
   updatePublicSettings: (settings) => {
     set((state) => ({ publicSettings: { ...state.publicSettings, ...settings } }));
+  },
+
+  updateProfileSettings: (settings) => {
+    set((state) => ({ profileSettings: { ...state.profileSettings, ...settings } }));
+  },
+
+  updateNotificationSettings: (settings) => {
+    set((state) => ({ notificationSettings: { ...state.notificationSettings, ...settings } }));
+  },
+
+  updateGeneralSettings: (settings) => {
+    set((state) => ({ generalSettings: { ...state.generalSettings, ...settings } }));
+  },
+
+  updateNotificationConfig: (settings) => {
+    set((state) => ({ notificationConfig: { ...state.notificationConfig, ...settings } }));
   },
 }));
